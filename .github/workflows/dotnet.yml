@@ -3,6 +3,9 @@ name: .NET
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'README.md'
+      - 'LICENSE'
   pull_request:
     branches: [ main ]
 
