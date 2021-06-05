@@ -1,0 +1,1 @@
+powershell.exe -executionPolicy Unrestricted -noexit -file "LocalBuild.ps1"

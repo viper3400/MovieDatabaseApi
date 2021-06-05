@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ObjectMapping version="1.0">
+	<Mapping>
+		<!--	Action -->
+		<src type="string">Action</src>
+		<dest type="string">1</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Adventure -->
+		<src type="string">Abenteuer</src>
+		<dest type="string">2</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Animation -->
+		<src type="string">Animation</src>
+		<dest type="string">3</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Animation -->
+		<src type="string">Anime</src>
+		<dest type="string">3</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Comedy -->
+		<src type="string">Komödie</src>
+		<dest type="string">4</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Crime -->
+		<src type="string">Krimi</src>
+		<dest type="string">5</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Documentary -->
+		<src type="string">Dokumentation</src>
+		<dest type="string">6</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Drama -->
+		<src type="string">Drama</src>
+		<dest type="string">7</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Family -->
+		<src type="string">Kinder-/Familienfilm</src>
+		<dest type="string">8</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Fantasy -->
+		<src type="string">Fantasy</src>
+		<dest type="string">9</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Film-Noir -->
+		<src type="string">Film-Noir</src>
+		<dest type="string">10</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Horror -->
+		<src type="string">Horror</src>
+		<dest type="string">11</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Musical -->
+		<src type="string">Musical</src>
+		<dest type="string">12</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Mystery -->
+		<src type="string">Mystery</src>
+		<dest type="string">13</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Romance -->
+		<src type="string">Liebe/Romantik</src>
+		<dest type="string">14</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Sci-Fi -->
+		<src type="string">Science-Fiction</src>
+		<dest type="string">15</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Short -->
+		<src type="string">Kurzfilm</src>
+		<dest type="string">16</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Thriller -->
+		<src type="string">Thriller</src>
+		<dest type="string">17</dest>
+	</Mapping>
+	<Mapping>
+		<!--	War -->
+		<src type="string">Krieg</src>
+		<dest type="string">18</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Western -->
+		<src type="string">Western</src>
+		<dest type="string">19</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Adult -->
+		<src type="string">Adult</src>
+		<dest type="string">20</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Music -->
+		<src type="string">Musikfilm</src>
+		<dest type="string">21</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Biography -->
+		<src type="string">Biographie</src>
+		<dest type="string">22</dest>
+	</Mapping>
+	<Mapping>
+		<!--	History -->
+		<src type="string">Historienfilm</src>
+		<dest type="string">23</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Sport -->
+		<src type="string">Sportfilm</src>
+		<dest type="string">24</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Gay -->
+		<src type="string">Gay</src>
+		<dest type="string">25</dest>
+	</Mapping>
+	<Mapping>
+		<!--	Undefined -->
+		<src type="string">k.A.</src>
+		<dest type="string">26</dest>
+	</Mapping>
+</ObjectMapping>
+	

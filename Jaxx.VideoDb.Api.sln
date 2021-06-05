@@ -1,0 +1,102 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaxx.VideoDb.WebApi", "src\Jaxx.VideoDb.WebApi\Jaxx.VideoDb.WebApi.csproj", "{E02B798A-A71C-4CCB-A54D-4B43D0B50B59}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaxx.VideoDb.WebApi.Test", "test\Jaxx.VideoDb.WebApi.Test\Jaxx.VideoDb.WebApi.Test.csproj", "{9E1CBD27-5C9D-42FA-870E-122510B3B0EF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaxx.VideoDb.Data", "src\Jaxx.VideoDb.Data\Jaxx.VideoDb.Data.csproj", "{2BD2838A-29E4-434C-9847-1B23227D5ED0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaxx.VideoDb.Data.MySql", "src\Jaxx.VideoDb.Data.MySql\Jaxx.VideoDb.Data.MySql.csproj", "{3E91012A-B0D2-482A-AE4A-E3A7BCF75A7F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaxx.VideoDb.Data.Context", "src\Jaxx.VideoDb.Data.Context\Jaxx.VideoDb.Data.Context.csproj", "{1A2D48B3-5C2C-4D15-BEE5-7FB43BBFBE43}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8CAC3ABE-D8A3-43CB-A73D-AA97B602A360}"
+	ProjectSection(SolutionItems) = preProject
+		GenerateApiDoc.cmd = GenerateApiDoc.cmd
+		GenerateApiDoc.sh = GenerateApiDoc.sh
+		LICENSE = LICENSE
+		LocalBuild.cmd = LocalBuild.cmd
+		LocalBuild.json = LocalBuild.json
+		LocalBuild.ps1 = LocalBuild.ps1
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaxx.WebApi.Shared.Identity", "src\Jaxx.WebApi.Shared.Identity\Jaxx.WebApi.Shared.Identity.csproj", "{5B87F973-97D2-44E9-B7D3-26E919AD7155}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaxx.WebApi.Shared.Identity.MySql", "src\Jaxx.WebApi.Shared.Identity.MySql\Jaxx.WebApi.Shared.Identity.MySql.csproj", "{FF17D6D5-6AB8-4E59-8933-EB174E38E8E3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaxx.Images", "src\Jaxx.Images\Jaxx.Images.csproj", "{CE73E2B1-5655-494E-A3EF-800DC67982BA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaxx.VideoDb.WebCore", "src\Jaxx.VideoDb.WebCore\Jaxx.VideoDb.WebCore.csproj", "{96E74EBE-BBE4-41BA-A604-6EE885296116}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaxx.WebApi.Shared", "src\Jaxx.WebApi.Shared\Jaxx.WebApi.Shared.csproj", "{46252AEF-A9C6-4B7B-ADA4-2857706928D2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaxx.WebGallery", "src\Jaxx.WebGallery\Jaxx.WebGallery.csproj", "{090FC1B4-3FA5-4E00-99D7-F269C6019AAE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaxx.WebGallery.Test", "test\Jaxx.WebGallery.Test\Jaxx.WebGallery.Test.csproj", "{D9472DCF-C255-4220-9E00-23DF29B4E33B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E02B798A-A71C-4CCB-A54D-4B43D0B50B59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E02B798A-A71C-4CCB-A54D-4B43D0B50B59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E02B798A-A71C-4CCB-A54D-4B43D0B50B59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E02B798A-A71C-4CCB-A54D-4B43D0B50B59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E1CBD27-5C9D-42FA-870E-122510B3B0EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E1CBD27-5C9D-42FA-870E-122510B3B0EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E1CBD27-5C9D-42FA-870E-122510B3B0EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E1CBD27-5C9D-42FA-870E-122510B3B0EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BD2838A-29E4-434C-9847-1B23227D5ED0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BD2838A-29E4-434C-9847-1B23227D5ED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BD2838A-29E4-434C-9847-1B23227D5ED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BD2838A-29E4-434C-9847-1B23227D5ED0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E91012A-B0D2-482A-AE4A-E3A7BCF75A7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E91012A-B0D2-482A-AE4A-E3A7BCF75A7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E91012A-B0D2-482A-AE4A-E3A7BCF75A7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E91012A-B0D2-482A-AE4A-E3A7BCF75A7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A2D48B3-5C2C-4D15-BEE5-7FB43BBFBE43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A2D48B3-5C2C-4D15-BEE5-7FB43BBFBE43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A2D48B3-5C2C-4D15-BEE5-7FB43BBFBE43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A2D48B3-5C2C-4D15-BEE5-7FB43BBFBE43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B87F973-97D2-44E9-B7D3-26E919AD7155}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B87F973-97D2-44E9-B7D3-26E919AD7155}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B87F973-97D2-44E9-B7D3-26E919AD7155}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B87F973-97D2-44E9-B7D3-26E919AD7155}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF17D6D5-6AB8-4E59-8933-EB174E38E8E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF17D6D5-6AB8-4E59-8933-EB174E38E8E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF17D6D5-6AB8-4E59-8933-EB174E38E8E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF17D6D5-6AB8-4E59-8933-EB174E38E8E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE73E2B1-5655-494E-A3EF-800DC67982BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE73E2B1-5655-494E-A3EF-800DC67982BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE73E2B1-5655-494E-A3EF-800DC67982BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE73E2B1-5655-494E-A3EF-800DC67982BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96E74EBE-BBE4-41BA-A604-6EE885296116}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96E74EBE-BBE4-41BA-A604-6EE885296116}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96E74EBE-BBE4-41BA-A604-6EE885296116}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96E74EBE-BBE4-41BA-A604-6EE885296116}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46252AEF-A9C6-4B7B-ADA4-2857706928D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46252AEF-A9C6-4B7B-ADA4-2857706928D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46252AEF-A9C6-4B7B-ADA4-2857706928D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46252AEF-A9C6-4B7B-ADA4-2857706928D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{090FC1B4-3FA5-4E00-99D7-F269C6019AAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{090FC1B4-3FA5-4E00-99D7-F269C6019AAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{090FC1B4-3FA5-4E00-99D7-F269C6019AAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{090FC1B4-3FA5-4E00-99D7-F269C6019AAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9472DCF-C255-4220-9E00-23DF29B4E33B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9472DCF-C255-4220-9E00-23DF29B4E33B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9472DCF-C255-4220-9E00-23DF29B4E33B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9472DCF-C255-4220-9E00-23DF29B4E33B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {910B53EB-3018-4D81-A322-9FBF0875DDAA}
+	EndGlobalSection
+EndGlobal

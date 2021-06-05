@@ -1,0 +1,19 @@
+{
+  "WebGallery": {
+    "Database": {
+      "ConnectionString": "server=servername;userid=myuser;pwd=topS1cret;port=3306;database=databaseshema;sslmode=none;"
+    },
+    "AlbumThumbPath": "./cache/albumThumbs/",
+    "ImageThumbPath": "./cache/imageThumbs/",
+    "ImagePath": "./images"
+  },
+  "Logging": {
+    "IncludeScopes": true,
+    "Console": {
+      "LogLevel": "Trace"
+    }
+  },
+  "LogLevel": {
+    "Default": "Trace"
+  }
+}

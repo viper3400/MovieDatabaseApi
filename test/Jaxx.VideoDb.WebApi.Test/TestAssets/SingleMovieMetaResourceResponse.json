@@ -1,0 +1,94 @@
+{
+  "href": null,
+  "metaEngine": "ofdb",
+  "reference": "214358",
+  "title": "Am Ende eines viel zu kurzen Tages",
+  "subTitle": null,
+  "originalTitle": null,
+  "year": "2011",
+  "productionCountry": "Deutschland",
+  "imgUrl": "https://ssl.ofdb.de/images/film/214/214358.jpg",
+  "length": "160",
+  "barcode" : "4006680017655",
+  "actors": [
+    {
+      "metaEngine": "ofdb",
+      "reference": null,
+      "actorName": "Andy Serkis"
+    },
+    {
+      "metaEngine": "ofdb",
+      "reference": null,
+      "actorName": "Thomas Brodie-Sangster"
+    },
+    {
+      "metaEngine": "ofdb",
+      "reference": null,
+      "actorName": "Aisling Loftus"
+    },
+    {
+      "metaEngine": "ofdb",
+      "reference": null,
+      "actorName": "Michael McElhatton"
+    },
+    {
+      "metaEngine": "ofdb",
+      "reference": null,
+      "actorName": "Sharon Horgan"
+    },
+    {
+      "metaEngine": "ofdb",
+      "reference": null,
+      "actorName": "Jessica Schwarz"
+    },
+    {
+      "metaEngine": "ofdb",
+      "reference": null,
+      "actorName": "Lilly Forgach"
+    },
+    {
+      "metaEngine": "ofdb",
+      "reference": null,
+      "actorName": "Ian Fitzgibbon"
+    },
+    {
+      "metaEngine": "ofdb",
+      "reference": null,
+      "actorName": "Ronan Raftery"
+    },
+    {
+      "metaEngine": "ofdb",
+      "reference": null,
+      "actorName": "Sean Duggan"
+    },
+    {
+      "metaEngine": "ofdb",
+      "reference": null,
+      "actorName": "Ben Harding"
+    },
+    {
+      "metaEngine": "ofdb",
+      "reference": null,
+      "actorName": "Killian Coyle"
+    }
+  ],
+  "plot": "\r\nAls er wieder regelmäßig die Schule in Dublin besuchen muss und mit Dr.King (Andy Serkis) erneut ein Therapeut die Behandlung beginnen soll, ändert sich erst einmal wenig an seiner Einstellung, aber dann gelingt es Dr.King langsam, sein Vertrauen zu gewinnen. Und er lernt Shelly (Aisling Loftus) kennen, die in seine Jahrgangsstufe geht, und auch nicht ganz normal ist...",
+  "rating": "6.19",
+  "editions": [
+    {
+      "metaEngine": "ofdb",
+      "reference": "214358;359030",
+      "name": "DVD: EuroVideo",
+      "country": "Deutschland",
+      "length": null
+    },
+    {
+      "metaEngine": "ofdb",
+      "reference": "214358;386454",
+      "name": "Blu-ray Disc: EuroVideo",
+      "country": "Deutschland",
+      "length": null
+    }
+  ],
+  "genres": [ "Drama" ]
+}

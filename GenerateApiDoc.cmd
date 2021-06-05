@@ -1,0 +1,1 @@
+apidoc.cmd -i .\src\Jaxx.Videodb.WebApi\Controllers\ -o ..\_doc\VideoDbApi -c .\src\Jaxx.Videodb.WebApi\ -f TokenController* -f  MovieDataController* -f InfoController* -f MovieMetaController*
