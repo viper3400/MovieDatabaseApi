@@ -14,7 +14,7 @@ name: "CodeQL"
 on:
   push:
     branches: [ main ]
-    paths:
+    paths-ignore:
       - 'README.md'
       - 'LICENSE'
       - '.github/workflows/**'
