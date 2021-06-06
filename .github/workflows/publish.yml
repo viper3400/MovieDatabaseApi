@@ -1,0 +1,39 @@
+name: .NET
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET 5.0
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Copy example configs
+      run: |
+        cp ./test/Jaxx.VideoDb.WebApi.Test/appsettings.example.json ./test/Jaxx.VideoDb.WebApi.Test/appsettings.json
+        cp ./test/Jaxx.VideoDb.WebApi.Test/ClientSecrets.Example.json ./test/Jaxx.VideoDb.WebApi.Test/ClientSecrets.json
+        cp ./test/Jaxx.VideoDb.WebApi.Test/testsetting.json.example ./test/Jaxx.VideoDb.WebApi.Test/testsetting.json
+        cp "./test/Jaxx.WebGallery.Test/testsettings .example.json" "./test/Jaxx.WebGallery.Test/testsettings.json"
+        cp ./src/Jaxx.VideoDb.WebApi/appsettings.example.json ./src/Jaxx.VideoDb.WebApi/appsettings.json
+        cp ./src/Jaxx.VideoDb.WebApi/ClientSecrets.example.json ./src/Jaxx.VideoDb.WebApi/ClientSecrets.json
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Publish
+      run: dotnet publish ./src/Jaxx.VideoDb.WebApi -c Release -r linux-x64 -p:PublishSingleFile=false -p:Version=$GITHUB_REF.$GITHUB_RUN_NUMBER
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+        with:
+          name: MoviDbApi_linux-x64_V$GITHUB_REF.$GITHUB_RUN_NUMBER
+          path: /home/runner/work/MovieDatabaseApi/MovieDatabaseApi/src/Jaxx.VideoDb.WebApi/bin/Release/net5.0/publish/
+    #- name: Test
+    #  run: dotnet test --no-build --verbosity normal

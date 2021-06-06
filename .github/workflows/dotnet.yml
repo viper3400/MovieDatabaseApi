@@ -2,10 +2,14 @@ name: .NET
 
 on:
   push:
+   tags-ignore:
+      - '*'
     branches: [ main ]
-    paths-ignore:
-      - 'README.md'
-      - 'LICENSE'
+    paths:
+      - '!README.md'
+      - '!LICENSE'
+      - '.github/workflows/dotnet.yml'
+      - '!.github/workflows/**'
   pull_request:
     branches: [ main ]
 
