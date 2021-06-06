@@ -29,7 +29,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Publish
-      run: dotnet publish ./src/Jaxx.VideoDb.WebApi -c Release -r linux-x64 -p:PublishSingleFile=false -p:Version=$GITHUB_REF.$GITHUB_RUN_NUMBER
+      run: dotnet publish ./src/Jaxx.VideoDb.WebApi -c Release -r linux-x64 -p:PublishSingleFile=false
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
