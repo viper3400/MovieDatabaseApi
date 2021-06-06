@@ -1,4 +1,4 @@
-name: .NET Branch
+name: ".NET Branch"
 
 on:
   push:
