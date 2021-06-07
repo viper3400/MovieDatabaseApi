@@ -1,4 +1,4 @@
-name: ".NET Branch"
+name: ".NET Manual Branch"
 
 on:
   workflow_dispatch:
