@@ -27,15 +27,17 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Set env
-      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      run: |
+        echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        echo "BUILD_NUMBER=${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
     - name: Build
       run: dotnet build --no-restore
     - name: Publish
-      run: dotnet publish ./src/Jaxx.VideoDb.WebApi -c Release -r linux-x64 -p:PublishSingleFile=false  -p:Version=${{ env.RELEASE_VERSION }}.${GITHUB_RUN_NUMBER}
+      run: dotnet publish ./src/Jaxx.VideoDb.WebApi -c Release -r linux-x64 -p:PublishSingleFile=false  -p:Version=${{ env.RELEASE_VERSION }}.${{ env.BUILD_NUMBER }}
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: MoviDbApi_linux-x64_V${{ env.RELEASE_VERSION }}.${GITHUB_RUN_NUMBER}
+        name: MoviDbApi_linux-x64_V${{ env.RELEASE_VERSION }}.${{ env.BUILD_NUMBER }}
         path: /home/runner/work/MovieDatabaseApi/MovieDatabaseApi/src/Jaxx.VideoDb.WebApi/bin/Release/net5.0/linux-x64/publish/
     #- name: Test
     #  run: dotnet test --no-build --verbosity normal
