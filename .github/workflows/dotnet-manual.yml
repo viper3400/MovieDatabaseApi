@@ -1,0 +1,30 @@
+name: ".NET Branch"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET 5.0
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Copy example configs
+      run: |
+        cp ./test/Jaxx.VideoDb.WebApi.Test/appsettings.example.json ./test/Jaxx.VideoDb.WebApi.Test/appsettings.json
+        cp ./test/Jaxx.VideoDb.WebApi.Test/ClientSecrets.Example.json ./test/Jaxx.VideoDb.WebApi.Test/ClientSecrets.json
+        cp ./test/Jaxx.VideoDb.WebApi.Test/testsetting.json.example ./test/Jaxx.VideoDb.WebApi.Test/testsetting.json
+        cp "./test/Jaxx.WebGallery.Test/testsettings .example.json" "./test/Jaxx.WebGallery.Test/testsettings.json"
+        cp ./src/Jaxx.VideoDb.WebApi/appsettings.example.json ./src/Jaxx.VideoDb.WebApi/appsettings.json
+        cp ./src/Jaxx.VideoDb.WebApi/ClientSecrets.example.json ./src/Jaxx.VideoDb.WebApi/ClientSecrets.json
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    #- name: Test
+    #  run: dotnet test --no-build --verbosity normal
