@@ -38,6 +38,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaxx.WebGallery", "src\Jaxx
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaxx.WebGallery.Test", "test\Jaxx.WebGallery.Test\Jaxx.WebGallery.Test.csproj", "{D9472DCF-C255-4220-9E00-23DF29B4E33B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "githubworkflows", "githubworkflows", "{B468CBB0-78DE-4AE5-8B64-B32A94931834}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\codeql-analysis.yml = .github\workflows\codeql-analysis.yml
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+		.github\workflows\publish.yml = .github\workflows\publish.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +102,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B468CBB0-78DE-4AE5-8B64-B32A94931834} = {8CAC3ABE-D8A3-43CB-A73D-AA97B602A360}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {910B53EB-3018-4D81-A322-9FBF0875DDAA}
