@@ -154,10 +154,10 @@ namespace Jaxx.VideoDb.WebApi.Test
 
             // Test
             var result = await _movieInventoryService.GetInventoryDataForRack(inventory.id, rackId, new CancellationToken());
-            Assert.Equal(17, result.TotalSize);
+            Assert.Equal(12, result.TotalSize);
 
             var resultExisting = await _movieInventoryService.GetInventoryDataForRack(inventory.id, rackId, new CancellationToken());
-            Assert.Equal(17, resultExisting.TotalSize);
+            Assert.Equal(12, resultExisting.TotalSize);
 
             // Tear down test
             await _movieInventoryService.DeleteInventory(inventory.id, new CancellationToken());

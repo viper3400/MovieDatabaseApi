@@ -168,7 +168,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
         {
             // Prepare a new inventory for Rack under test
             var rackId = "R05F2";
-            var expectedSize = 17;
+            var expectedSize = 12;
             var inventoryName = $"ITest-{nameof(GetInventoryForRack)}-{DateTime.Now.Ticks}";
 
             var createResponse = await PostCreateInventory(inventoryName);
@@ -193,7 +193,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
         {
             // Prepare a new inventory for Rack under test
             var rackId = "R05F2";
-            var expectedSize = 17;
+            var expectedSize = 12;
             var inventoryName = $"ITest-{nameof(GetInventoryForRack)}-{DateTime.Now.Ticks}";
 
             var createResponse = await PostCreateInventory(inventoryName);
@@ -279,7 +279,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
         {
             // Prepare a new inventory for Rack under test
             var rackId = "R05F2";
-            var expectedSize = 17;
+            var expectedSize = 12;
             var expectedRackCount = 196;
             var inventoryName = $"ITest-{nameof(GetRacksAndState)}-{DateTime.Now.Ticks}";
 

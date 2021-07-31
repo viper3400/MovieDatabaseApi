@@ -78,7 +78,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
             var movieDataOptions = new MovieDataOptions { Diskid = "R15" };
             var movieDataOptionsJson = JsonConvert.SerializeObject(movieDataOptions);
 
-            var expectedCount = 107;
+            var expectedCount = 108;
 
             var response = await _client.PostAsync("/MovieData", new StringContent(movieDataOptionsJson, Encoding.UTF8, "application/json"));
             dynamic collection = JObject.Parse(response.Content.ReadAsStringAsync().Result);
@@ -129,7 +129,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
         [Fact]
         public async Task GetMovieDataWithFilterForMediaType()
         {            
-            var expectedCount = 183;
+            var expectedCount = 168;
             var response = await _client.GetAsync("/MovieData/?mediatypes=15");
             dynamic collection = JObject.Parse(response.Content.ReadAsStringAsync().Result);
 
@@ -140,7 +140,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
         [Fact]
         public async Task GetMovieDataWithFilterForListOfMediaTypes()
         {
-            var expectedCount = 1673;
+            var expectedCount = 1663;
 
             var response = await _client.GetAsync("/MovieData/?mediatypes=15,16");
             dynamic collection = JObject.Parse(response.Content.ReadAsStringAsync().Result);
@@ -156,7 +156,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
             var movieDataOptions = new MovieDataOptions { Diskid = "R15" };
             var movieDataOptionsJson = JsonConvert.SerializeObject(movieDataOptions);
 
-            var expectedCount = 107;
+            var expectedCount = 108;
 
             var response = await _client.PostAsync("/MovieData", new StringContent(movieDataOptionsJson, Encoding.UTF8, "application/json"));
             dynamic collection = JObject.Parse(response.Content.ReadAsStringAsync().Result);
@@ -183,7 +183,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
         [Fact]
         public async Task GetMovieSeenData()
         {
-            var expectedCount = 1716;
+            var expectedCount = 1884;
 
             var response = await _client.GetAsync("/MovieData/seen");
             dynamic collection = JObject.Parse(response.Content.ReadAsStringAsync().Result);
@@ -242,7 +242,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
             var response = await _client.GetAsync("/MovieData/favorites");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             dynamic collection = JObject.Parse(response.Content.ReadAsStringAsync().Result);
-            Assert.Equal(130, (int)collection.size);
+            Assert.Equal(144, (int)collection.size);
         }
 
         [Fact]
@@ -251,7 +251,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
             var response = await _client.GetAsync("/MovieData/watchagain");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             dynamic collection = JObject.Parse(response.Content.ReadAsStringAsync().Result);
-            Assert.Equal(98, (int)collection.size);
+            Assert.Equal(110, (int)collection.size);
         }
 
         [Fact]

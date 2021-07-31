@@ -81,7 +81,7 @@ namespace Jaxx.VideoDb.WebApi.Test
         [Trait("Category", "Online")]
         public async void ReturnPagedMovieByRack()
         {
-            var expectedSize = 17;
+            var expectedSize = 12;
             var pagingOptions = new PagingOptions { Limit = 100, Offset = 0 };
             var movieDataOptions = new MovieDataOptions { Search = "R05F2" };
 
@@ -111,7 +111,7 @@ namespace Jaxx.VideoDb.WebApi.Test
         {
             var id = new List<int> { 783 };
             var expectedMovie = "Reine Geschmacksache";
-            var expectedSeenCount = 5;
+            var expectedSeenCount = 6;
             var pagingOptions = new PagingOptions { Limit = 100, Offset = 0 };
             var movieDataOptions = new MovieDataOptions();
 
@@ -144,7 +144,7 @@ namespace Jaxx.VideoDb.WebApi.Test
 
             var actual = await _movieDataService.GetSeenMovies(pagingOptions, new DateRangeFilterOptions(), new System.Threading.CancellationToken());
 
-            Assert.Equal(1716, actual.TotalSize);
+            Assert.Equal(1884, actual.TotalSize);
             Assert.Equal("Der Ganz normale Wahnsinn", actual.Items.FirstOrDefault(s => s.SeenDate == new DateTime(2019, 05, 25)).Movie.title);
         }
 
@@ -440,7 +440,7 @@ namespace Jaxx.VideoDb.WebApi.Test
         public async void GetNextFreeDiskId()
         {
             var actual = await _movieDataService.GetNextFreeDiskId("R12F5");
-            Assert.Equal("R12F5D15", actual);
+            Assert.Equal("R12F5D11", actual);
         }
 
         [Fact]
