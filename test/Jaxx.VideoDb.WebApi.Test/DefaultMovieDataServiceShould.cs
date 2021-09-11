@@ -144,7 +144,7 @@ namespace Jaxx.VideoDb.WebApi.Test
 
             var actual = await _movieDataService.GetSeenMovies(pagingOptions, new DateRangeFilterOptions(), new System.Threading.CancellationToken());
 
-            Assert.Equal(1884, actual.TotalSize);
+            Assert.Equal(1885, actual.TotalSize);
             Assert.Equal("Der Ganz normale Wahnsinn", actual.Items.FirstOrDefault(s => s.SeenDate == new DateTime(2019, 05, 25)).Movie.title);
         }
 

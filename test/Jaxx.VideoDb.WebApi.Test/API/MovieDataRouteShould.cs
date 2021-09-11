@@ -183,7 +183,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
         [Fact]
         public async Task GetMovieSeenData()
         {
-            var expectedCount = 1884;
+            var expectedCount = 1885;
 
             var response = await _client.GetAsync("/MovieData/seen");
             dynamic collection = JObject.Parse(response.Content.ReadAsStringAsync().Result);
