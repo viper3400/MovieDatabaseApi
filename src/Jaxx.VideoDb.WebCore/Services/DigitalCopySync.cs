@@ -25,7 +25,7 @@ namespace Jaxx.VideoDb.WebCore.Services
             var resultList = new List<string>();
             var files = Directory.EnumerateFiles(directory, filter, SearchOption.AllDirectories);
 
-
+            // --> Can't access the db in parallel the way MovieDataService is build
             //Parallel.ForEach(files, file =>
             //{
             //    var result = CheckDigitalCopyEntryForPath(file);
@@ -50,7 +50,7 @@ namespace Jaxx.VideoDb.WebCore.Services
             else
             {
                 var dBFilename = dbResult.Items.FirstOrDefault().filename != null ? dbResult.Items.FirstOrDefault().filename : "";
-                if (string.IsNullOrWhiteSpace(dBFilename)) result = $"No file found for title '{fi.Directory.Name}'. Would do update here!";
+                if (string.IsNullOrWhiteSpace(dBFilename)) result = $"No file entry found for title '{fi.Directory.Name}'. Would do update here!";
                 else if (dBFilename.Replace("\"","").ToLower() != path.ToLower()) result = $"DigitalCopyPath: {path} - Mismatch with db path: {dBFilename}";
                 else result = "";
             }

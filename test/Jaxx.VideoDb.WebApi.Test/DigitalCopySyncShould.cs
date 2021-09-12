@@ -23,6 +23,7 @@ namespace Jaxx.VideoDb.WebApi.Test
         public async void ScanDigitalCopies()
         {
             var result = await digitalCopySync.ScanDigitalCopies("V:\\Filme", "*.mkv");
+            System.IO.File.AppendAllLines("D:\\result.txt", result);
         
         }
     }
