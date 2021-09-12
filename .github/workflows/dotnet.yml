@@ -8,8 +8,8 @@ on:
     paths:
       - '!README.md'
       - '!LICENSE'
-      - '.github/workflows/dotnet.yml'
       - '!.github/workflows/**'
+      - '.github/workflows/dotnet.yml'
   pull_request:
     branches: [ main ]
 
