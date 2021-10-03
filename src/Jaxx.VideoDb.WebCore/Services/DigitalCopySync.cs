@@ -45,13 +45,13 @@ namespace Jaxx.VideoDb.WebCore.Services
             string result;
             var fi = new FileInfo(path);
             var dbResult = await movieDataService.GetMovieDataAsync(null, new PagingOptions { Limit = 2, Offset = 0 }, new Models.MovieDataOptions { Title = fi.Directory.Name}, new System.Threading.CancellationToken());
-            if (dbResult.TotalSize < 1) return $"Got no result for title ''{fi.Directory.Name}'.";
-            if (dbResult.TotalSize > 1) result = $"Got more then one result for title '{fi.Directory.Name}'.";
+            if (dbResult.TotalSize < 1) return $"'{fi.Directory.Name}';'No DB entry found for this file.';'${fi.FullName}'";
+            if (dbResult.TotalSize > 1) result = $"'{fi.Directory.Name}';'Got more then one result for this file.';'${fi.FullName}'";
             else
             {
                 var dBFilename = dbResult.Items.FirstOrDefault().filename != null ? dbResult.Items.FirstOrDefault().filename : "";
-                if (string.IsNullOrWhiteSpace(dBFilename)) result = $"No file entry found for title '{fi.Directory.Name}'. Would do update here!";
-                else if (dBFilename.Replace("\"","").ToLower() != path.ToLower()) result = $"DigitalCopyPath: {path} - Mismatch with db path: {dBFilename}";
+                if (string.IsNullOrWhiteSpace(dBFilename)) result = $"'{fi.Directory.Name}';'This is a match, but filepath is not set on db.'";
+                else if (dBFilename.Replace("\"", "").ToLower() != path.ToLower()) result = $"'{fi.Directory.Name}';'This is a match, but db entry is not correct '{dBFilename}';'${fi.FullName}'";
                 else result = "";
             }
 

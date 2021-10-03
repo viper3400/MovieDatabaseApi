@@ -174,7 +174,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             dynamic collection = JObject.Parse(response.Content.ReadAsStringAsync().Result);
 
-            var expectedNextLink = "https://danielgraefe.de/api/videodb/beta/moviedata?Search=R20&SortOrder=ByDiskIdAsc&UseInlineCoverImage=False&limit=25&offset=25";
+            var expectedNextLink = "https://danielgraefe.de/api/videodb/beta/moviedata?Search=R20&SortOrder=ByDiskIdAsc&UseInlineCoverImage=False&ExactMatch=False&limit=25&offset=25";
             var actualNextLink = (string)collection.next.href;
             Assert.Equal(expectedNextLink, actualNextLink);
         }

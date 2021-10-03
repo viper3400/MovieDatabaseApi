@@ -252,12 +252,8 @@ paket-files/
 *.sln.iml
 
 project.lock.json
-/test/ClientSecrets.json
-/test/Jaxx.VideoDb.WebApi.Test/testsettings.json
-/test/Jaxx.VideoDb.WebApi.Test/appsettings.json
-/src/Jaxx.VideoDb.WebApi/ClientSecrets.json
-/src/Jaxx.VideoDb.WebApi/appsettings.json
-/test/Jaxx.VideoDb.WebApi.Test/ClientSecrets.json
-/test/Jaxx.WebGallery.Test/testsettings.json
+ClientSecrets.json
+testsettings.json
+appsettings.json
 /src/Jaxx.VideoDb.WebApi/cache/*
-/test/Jaxx.WebGallery.Test/testsettings.json
+

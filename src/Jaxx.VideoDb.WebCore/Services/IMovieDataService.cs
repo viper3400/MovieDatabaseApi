@@ -19,7 +19,7 @@ namespace Jaxx.VideoDb.WebCore.Services
            MovieDataOptions movieDataOptions,
            CancellationToken ct);
 
-        Task<Page<MovieDataResource>> GetMovieDataSurpriseAsync(int surpriseCount, MovieDataOptions movieDataOptions, CancellationToken ct);           
+        Task<Page<MovieDataResource>> GetMovieDataSurpriseAsync(int surpriseCount, MovieDataOptions movieDataOptions, CancellationToken ct);
 
         Task<Page<MovieDataResource>> GetFavoriteMoviesAsync(
           string userName,

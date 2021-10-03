@@ -8,7 +8,7 @@ namespace Jaxx.VideoDb.WebCore.Models
 {
     public sealed class MovieDataOptions
     {
-        [FromQuery]        
+        [FromQuery]
         public string Diskid { get; set; }
 
         [FromQuery]
@@ -40,5 +40,11 @@ namespace Jaxx.VideoDb.WebCore.Models
         /// </summary>
         [FromQuery]
         public bool UseInlineCoverImage { get; set; }
+
+        /// <summary>
+        /// If true, API returns just results which match exactly to the search term.
+        /// </summary>
+        [FromQuery]
+        public bool ExactMatch { get; set; } = false;
     }
 }

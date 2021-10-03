@@ -76,6 +76,32 @@ namespace Jaxx.VideoDb.WebApi.Test
             Assert.Equal(expectedId, actual.Items.FirstOrDefault().id);
         }
 
+        [Fact]
+        [Trait("Category", "Online")]
+        public async void ReturnMovieDataByExcactTitleSearch()
+        {
+            var expectedId = 2094;
+            var pagingOptions = new PagingOptions { Limit = 100, Offset = 0 };
+            var movieDataOptions = new MovieDataOptions { Title = "HER", ExactMatch = true };
+
+            var actual = await _movieDataService.GetMovieDataAsync(null, pagingOptions, movieDataOptions, new System.Threading.CancellationToken());
+
+            Assert.Equal(1, actual.TotalSize);
+            Assert.Equal(expectedId, actual.Items.FirstOrDefault().id);
+        }
+
+        [Fact]
+        [Trait("Category", "Online")]
+        public async void ReturnMovieDataByContainingTitleSearch()
+        {
+            var pagingOptions = new PagingOptions { Limit = 100, Offset = 0 };
+            var movieDataOptions = new MovieDataOptions { Title = "HER" };
+
+            var actual = await _movieDataService.GetMovieDataAsync(null, pagingOptions, movieDataOptions, new System.Threading.CancellationToken());
+
+            Assert.Equal(97, actual.TotalSize);
+        }
+
 
         [Fact]
         [Trait("Category", "Online")]

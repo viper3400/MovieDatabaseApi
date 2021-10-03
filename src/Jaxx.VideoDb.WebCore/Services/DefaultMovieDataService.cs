@@ -150,7 +150,7 @@ namespace Jaxx.VideoDb.WebCore.Services
                 {
                     query = QueryFilterMovieByDiskid(movieDataOptions.Search, query);
                 }
-                else query = QueryFilterByMovieTitle(movieDataOptions.Search, query);
+                else query = QueryFilterByMovieTitle(movieDataOptions.Search, movieDataOptions.ExactMatch, query);
             }
 
             if (!string.IsNullOrWhiteSpace(movieDataOptions.MediaTypes))
@@ -165,7 +165,7 @@ namespace Jaxx.VideoDb.WebCore.Services
 
             if (!string.IsNullOrWhiteSpace(movieDataOptions.Title))
             {
-                query = QueryFilterByMovieTitle(movieDataOptions.Title, query);
+                query = QueryFilterByMovieTitle(movieDataOptions.Title, movieDataOptions.ExactMatch, query);
             }
 
             if (!string.IsNullOrWhiteSpace(movieDataOptions.Genres))
@@ -281,10 +281,13 @@ namespace Jaxx.VideoDb.WebCore.Services
             return query;
         }
 
-        private IQueryable<videodb_videodata> QueryFilterByMovieTitle(string title, IQueryable<videodb_videodata> query)
+        private IQueryable<videodb_videodata> QueryFilterByMovieTitle(string title, bool exactMatch, IQueryable<videodb_videodata> query)
         {
-            _logger.LogTrace("Searching for title: {0}", title);
-            query = query.Where(v => v.title.Contains(title.ToLower()) || v.subtitle.Contains(title.ToLower()));
+            _logger.LogTrace("Searching for title: {0}, exactMatch: {1}", title, exactMatch);
+            if (!exactMatch)
+            {
+                query = query.Where(v => v.title.Contains(title.ToLower()) || v.subtitle.Contains(title.ToLower()));
+            } else query = query.Where(v => v.title.ToLower() == title.ToLower() || v.subtitle.ToLower() == title.ToLower());
             return query;
         }
 
