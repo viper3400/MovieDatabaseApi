@@ -44,7 +44,7 @@ namespace Jaxx.VideoDb.WebApi.Test
             var actual = _movieDataService.GetMovieDataAsync(id, new System.Threading.CancellationToken());
 
             Assert.Equal(expectedMovie, actual.Result.title);
-            Assert.Equal("Blu-ray", actual.Result.MediaTypeName);
+            Assert.Equal("HDD", actual.Result.MediaTypeName);
             Assert.NotNull(actual.Result.LastSeenInformation);
         }
 
@@ -170,7 +170,7 @@ namespace Jaxx.VideoDb.WebApi.Test
 
             var actual = await _movieDataService.GetSeenMovies(pagingOptions, new DateRangeFilterOptions(), new System.Threading.CancellationToken());
 
-            Assert.Equal(1885, actual.TotalSize);
+            Assert.Equal(1908, actual.TotalSize);
             Assert.Equal("Der Ganz normale Wahnsinn", actual.Items.FirstOrDefault(s => s.SeenDate == new DateTime(2019, 05, 25)).Movie.title);
         }
 
@@ -466,7 +466,7 @@ namespace Jaxx.VideoDb.WebApi.Test
         public async void GetNextFreeDiskId()
         {
             var actual = await _movieDataService.GetNextFreeDiskId("R12F5");
-            Assert.Equal("R12F5D11", actual);
+            Assert.Equal("R12F5D04", actual);
         }
 
         [Fact]

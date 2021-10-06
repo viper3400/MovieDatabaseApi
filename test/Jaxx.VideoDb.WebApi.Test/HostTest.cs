@@ -36,7 +36,7 @@ namespace Jaxx.VideoDb.WebApi.Test
             //await host.StartAsync();
             //var movieDataService = host.Services.GetService(typeof(IMovieDataService)) as IMovieDataService;
             var actual = await movieDataService.GetNextFreeDiskId("R12F5");
-            Assert.Equal("R12F5D11", actual);
+            Assert.Equal("R12F5D04", actual);
         }
 
         [Fact]
