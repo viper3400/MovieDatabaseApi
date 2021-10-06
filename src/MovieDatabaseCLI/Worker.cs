@@ -22,7 +22,7 @@ namespace MovieDatabaseCLI
         private int? _exitCode;
         private readonly ILogger<Worker> _logger;
         private readonly VideoDbContext _context;
-        public Worker ( IHostApplicationLifetime hostLifetime, ILogger<Worker> logger, VideoDbContext context)
+        public Worker(IHostApplicationLifetime hostLifetime, ILogger<Worker> logger, VideoDbContext context)
         {
             _hostLifetime = hostLifetime ?? throw new ArgumentNullException(nameof(hostLifetime));
 
@@ -43,46 +43,53 @@ namespace MovieDatabaseCLI
 
                 Parallel.Invoke(() => dataFromDatabase = GetDataFromDatabase().ToList(), () => fileList = GetFilesFromStorage().ToList());
 
-                var entriesWithOutFileName = dataFromDatabase.Where(item => !item.FileExistsOnStorage);
-                _logger.LogInformation("Entries without filename: {0}.", entriesWithOutFileName.Count());
-                _logger.LogInformation("Entries in file list: {0}.", fileList.Count());
-
-                var updateCandidates = new List<SyncResultModel>();
-                var multipleResultsList = new List<SyncResultModel>();
-                var noResultsList = new List<SyncResultModel>();
-
-                Parallel.ForEach(entriesWithOutFileName, entry =>
-                {
-                    var movies = fileList.Where(file => file.Title == entry.Title || file.Title == $"{entry.Title} {entry.Subtitle}");
-                    if (movies != null)
-                    {
-                        if (movies.Count() == 1)
-                        {
-                            //_logger.LogInformation("Update candidata: {0}.", movies.FirstOrDefault().Title);
-                            updateCandidates.Add(new SyncResultModel { Title = entry.Title, FilePath = movies.FirstOrDefault().FilePath, Deleted = entry.Deleted });
-                        }
-                        else if (movies.Count() > 1)
-                        {
-                            multipleResultsList.Add(entry);
-                        }
-                        else noResultsList.Add(new SyncResultModel { Title = entry.Title, Deleted = entry.Deleted });
-                    }
-                });
-
                 Parallel.Invoke(
-                    () => WriteToFile(updateCandidates, "D:\\updatecandidates.txt"),
-                    () => WriteToFile(multipleResultsList, "D:\\multiResults.txt"),
-                    () => WriteToFile(noResultsList, "D:\\noResults.txt"));
-
-                _logger.LogInformation("Update candidates: {0}.", updateCandidates.Count());
-                _logger.LogInformation("Multiple results: {0}.", multipleResultsList.Count());
-                _logger.LogInformation("No results: {0}.", noResultsList.Count());
+                    () => ProcessMoviesWithoutFilePath(dataFromDatabase, fileList),
+                    () => ProcessMoviesWithFilePath(dataFromDatabase));
             }
             finally
             {
                 _hostLifetime.StopApplication();
             }
-            
+
+        }
+
+        private void ProcessMoviesWithoutFilePath(List<SyncResultModel> dataFromDatabase, List<SyncResultModel> fileList)
+        {
+            var entriesWithOutFileName = dataFromDatabase.Where(item => !item.FileExistsOnStorage);
+            _logger.LogInformation("Entries without filename: {0}.", entriesWithOutFileName.Count());
+            _logger.LogInformation("Entries in file list: {0}.", fileList.Count());
+
+            var updateCandidates = new List<SyncResultModel>();
+            var multipleResultsList = new List<SyncResultModel>();
+            var noResultsList = new List<SyncResultModel>();
+
+            Parallel.ForEach(entriesWithOutFileName, entry =>
+            {
+                var movies = fileList.Where(file => file.Title == entry.Title || file.Title == $"{entry.Title} {entry.Subtitle}");
+                if (movies != null)
+                {
+                    if (movies.Count() == 1)
+                    {
+                        //_logger.LogInformation("Update candidata: {0}.", movies.FirstOrDefault().Title);
+                        if (entry.Deleted != 999) updateCandidates.Add(new SyncResultModel { Id = entry.Id, Title = entry.Title, FilePath = movies.FirstOrDefault().FilePath, Deleted = entry.Deleted });
+                    }
+                    else if (movies.Count() > 1)
+                    {
+                        multipleResultsList.Add(entry);
+                    }
+                    else noResultsList.Add(new SyncResultModel { Title = entry.Title, Deleted = entry.Deleted });
+                }
+            });
+
+            Parallel.Invoke(
+                () => WriteToFile(updateCandidates, "D:\\updatecandidates.txt"),
+                () => WriteToFile(multipleResultsList, "D:\\multiResults.txt"),
+                () => WriteToFile(noResultsList, "D:\\noResults.txt"));
+
+            _logger.LogInformation("Update candidates: {0}.", updateCandidates.Count());
+            _logger.LogInformation("Multiple results: {0}.", multipleResultsList.Count());
+            _logger.LogInformation("No results: {0}.", noResultsList.Count());
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -101,8 +108,8 @@ namespace MovieDatabaseCLI
             {
                 var fileName = string.IsNullOrWhiteSpace(entry.filename) ? string.Empty : entry.filename.Replace("\"", string.Empty);
                 var isExisting = File.Exists(fileName);
-                
-                resultList.Add(new SyncResultModel { Title = entry.title, Subtitle = entry.subtitle, FilePath = fileName, FileExistsOnStorage = isExisting, Deleted = entry.owner_id});
+
+                resultList.Add(new SyncResultModel { Id = entry.id, Title = entry.title, Subtitle = entry.subtitle, FilePath = fileName, FileExistsOnStorage = isExisting, Deleted = entry.owner_id });
 
                 if (!isExisting)
                 {
@@ -118,11 +125,11 @@ namespace MovieDatabaseCLI
         {
             _logger?.LogInformation("Start enumerating movie files.");
             var fileResultList = new List<SyncResultModel>();
-            var fileList =  Directory.EnumerateFiles(this.path, this.filter, SearchOption.AllDirectories);
+            var fileList = Directory.EnumerateFiles(this.path, this.filter, SearchOption.AllDirectories);
             foreach (var file in fileList)
             {
                 var fi = new FileInfo(file);
-                fileResultList.Add(new SyncResultModel { Title = fi.Directory.Name,  FilePath = file, FileExistsOnStorage = true });
+                fileResultList.Add(new SyncResultModel { Title = fi.Directory.Name, FilePath = file, FileExistsOnStorage = true });
             }
 
             _logger?.LogInformation("Finished enumerating movie files.");
@@ -131,9 +138,25 @@ namespace MovieDatabaseCLI
 
         private void WriteToFile(List<SyncResultModel> list, string path)
         {
-            foreach(var entry in list)
+            foreach (var entry in list)
             {
-                File.AppendAllText(path, $"{entry.Deleted};{entry.Title};{entry.FilePath}{Environment.NewLine}");
+                File.AppendAllText(path, $"{entry.Id};{entry.Deleted};{entry.Title};{entry.FilePath}{Environment.NewLine}");
+            }
+        }
+
+        private void ProcessMoviesWithFilePath(List<SyncResultModel> dataFromDatabase)
+        {
+            var markedAsDeleted = dataFromDatabase.Where(item => item.Deleted == 999 && item.FileExistsOnStorage);
+            WriteToFile(markedAsDeleted.ToList(), "D:\\deleted_but_present");
+        }
+
+        private void UpdateMovies(List<SyncResultModel> updateList)
+        {
+            foreach (var entry in updateList)
+            {
+                var updateCandidate = _context.VideoData.Where(item => item.id == entry.Id).FirstOrDefault();
+                updateCandidate.filename = $"\"{entry.FilePath}\"";
+                _context.SaveChanges();
             }
         }
     }
