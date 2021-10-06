@@ -85,7 +85,8 @@ namespace MovieDatabaseCLI
             Parallel.Invoke(
                 () => WriteToFile(updateCandidates, "D:\\updatecandidates.txt"),
                 () => WriteToFile(multipleResultsList, "D:\\multiResults.txt"),
-                () => WriteToFile(noResultsList, "D:\\noResults.txt"));
+                () => WriteToFile(noResultsList, "D:\\noResults.txt"),
+                () => UpdateMovies(updateCandidates));
 
             _logger.LogInformation("Update candidates: {0}.", updateCandidates.Count());
             _logger.LogInformation("Multiple results: {0}.", multipleResultsList.Count());
