@@ -46,6 +46,8 @@ namespace MovieDatabaseCLI
                 Parallel.Invoke(
                     () => ProcessMoviesWithoutFilePath(dataFromDatabase, fileList),
                     () => ProcessMoviesWithFilePath(dataFromDatabase));
+
+                FindMoviesWithoutDbEntry(fileList);
             }
             finally
             {
@@ -66,7 +68,7 @@ namespace MovieDatabaseCLI
 
             Parallel.ForEach(entriesWithOutFileName, entry =>
             {
-                var movies = fileList.Where(file => file.Title == entry.Title || file.Title == $"{entry.Title} {entry.Subtitle}");
+                var movies = fileList.Where(file => file.Title.ToLower() == entry.Title.ToLower() || file.Title.ToLower() == $"{entry.Title.ToLower()} {entry.Subtitle?.ToLower()}");
                 if (movies != null)
                 {
                     if (movies.Count() == 1)
@@ -86,7 +88,8 @@ namespace MovieDatabaseCLI
                 () => WriteToFile(updateCandidates, "D:\\updatecandidates.txt"),
                 () => WriteToFile(multipleResultsList, "D:\\multiResults.txt"),
                 () => WriteToFile(noResultsList, "D:\\noResults.txt"),
-                () => UpdateMovies(updateCandidates));
+                () => UpdateMovies(updateCandidates)
+                );
 
             _logger.LogInformation("Update candidates: {0}.", updateCandidates.Count());
             _logger.LogInformation("Multiple results: {0}.", multipleResultsList.Count());
@@ -114,7 +117,7 @@ namespace MovieDatabaseCLI
 
                 if (!isExisting)
                 {
-                    File.AppendAllText("D:\\result_X.txt", $"{entry.title};{fileName};{isExisting}{Environment.NewLine}");
+                    //File.AppendAllText("D:\\result_X.txt", $"{entry.title};{fileName};{isExisting}{Environment.NewLine}");
                 }
             }
 
@@ -159,6 +162,17 @@ namespace MovieDatabaseCLI
                 updateCandidate.filename = $"\"{entry.FilePath}\"";
                 _context.SaveChanges();
             }
+        }
+
+        private void FindMoviesWithoutDbEntry(List<SyncResultModel> fileList)
+        {
+            var resultList = new List<SyncResultModel>();
+            foreach(var file in fileList)
+            {
+                var result  = _context.VideoData.Where(item => item.filename == $"\"{file.FilePath}\"").Count();
+                if (result < 1) resultList.Add(file);
+            }
+            WriteToFile(resultList, "D:\\lost_files.txt");
         }
     }
 }
