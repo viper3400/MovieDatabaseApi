@@ -20,19 +20,21 @@ namespace MovieDatabaseCLI
         {
             var hostBuilder = new HostBuilder()
             //.UseEnvironment("UnitTests")
-            .ConfigureLogging(logging =>
+            /*.ConfigureLogging(logging =>
             {
-                logging.ClearProviders();
-                logging.AddConsole();
-               // logging.SetMinimumLevel(LogLevel.Trace);
+                //logging.ClearProviders();
+                // logging.AddConsole();
+                // logging.SetMinimumLevel(LogLevel.Trace);
+                logging.AddSimpleConsole();
 
-            })
+            })*/
+            //.ConfigureLogging()
             .ConfigureAppConfiguration((hostingContext, config) =>
             {
                 config.AddJsonFile("ClientSecrets.json");
                 config.AddJsonFile("testsettings.json");
                 config.AddJsonFile("appsettings.json");
-            })
+            })            
             .ConfigureServices((hostContext, services) =>
             {
                 Configuration = hostContext.Configuration;
@@ -61,10 +63,15 @@ namespace MovieDatabaseCLI
 
                 services.AddScoped<IUserContextInformationProvider>(c => new DummyUserContextInformationProvider(UserName, ViewGroup));
                 services.AddVideoDbMySql(Configuration);
-               // services.AddVideoDb(Configuration);
+                services.AddVideoDb(Configuration);
 
-                services.AddHostedService<Worker>();
+//                services.AddHostedService<Worker>();
 
+            })
+            .ConfigureLogging((hostingContext, logging) =>
+            {
+                logging.AddConfiguration(Configuration.GetSection("Logging"));
+                logging.AddSimpleConsole();
             });
 
             return hostBuilder;

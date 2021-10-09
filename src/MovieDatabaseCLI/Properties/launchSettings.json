@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MovieDatabaseCLI": {
+      "commandName": "Project",
+      "commandLineArgs": " find-matches -p \"V:\\Filme\" -f \"*.mkv\" -o D:\\matches.txt"
+    }
+  }
+}

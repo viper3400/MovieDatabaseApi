@@ -46,7 +46,9 @@ namespace Jaxx.VideoDb.WebCore.Services
         /// </summary>
         internal IEnumerable<videodb_videodata> GetDbEntriesWithFilename()
         {
-            return context.VideoData.Where(item => !string.IsNullOrWhiteSpace(item.filename) && item.owner_id != options.DeletedUserId).ToList();
+            var result = context.VideoData.Where(item => !string.IsNullOrWhiteSpace(item.filename) && item.owner_id != options.DeletedUserId).ToList();
+            logger.LogDebug("Found {0} db entries with a filename.", result.Count);
+            return result;
         }
 
         /// <summary>
@@ -55,7 +57,9 @@ namespace Jaxx.VideoDb.WebCore.Services
         /// <returns></returns>
         internal IEnumerable<videodb_videodata> GetDbEntriesWithoutFileName()
         {
-            return context.VideoData.Where(item => string.IsNullOrWhiteSpace(item.filename) && item.owner_id != options.DeletedUserId).ToList();
+            var result = context.VideoData.Where(item => string.IsNullOrWhiteSpace(item.filename) && item.owner_id != options.DeletedUserId).ToList();
+            logger.LogDebug("Found {0} db entries without a filename.", result.Count);
+            return result;
         }
 
         /// <summary>
@@ -108,19 +112,13 @@ namespace Jaxx.VideoDb.WebCore.Services
         /// Removes the filename from the db entries given in the list.
         /// </summary>
         /// <param name="entriesWhereFileNotExists"></param>
-        /// <param name="dryMode"></param>
-        public void ClearFilenameForNotExistingFiles(BlockingCollection<videodb_videodata> entriesWhereFileNotExists, bool dryMode = true)
+        public void ClearFilenameForNotExistingFiles(BlockingCollection<videodb_videodata> entriesWhereFileNotExists)
         {
-
             foreach (var notExistingFile in entriesWhereFileNotExists)
             {
-                if (!dryMode)
-                {
                     logger.LogWarning($"Deleting filename for movie with id '{notExistingFile.id}' and title '{notExistingFile.title}', filepath was '{notExistingFile.filename}'");
                     context.VideoData.Where(item => item.id == notExistingFile.id).FirstOrDefault().filename = string.Empty;
                     context.SaveChanges();
-                }
-                else logger.LogWarning($"DRYMODE: Deleting filename for movie with id '{notExistingFile.id}' and title '{notExistingFile.title}', filepath was '{notExistingFile.filename}'");
              }
         }
 
@@ -131,7 +129,7 @@ namespace Jaxx.VideoDb.WebCore.Services
         /// <param name="path"></param>
         /// <param name="filter"></param>
         /// <returns>Returns a list with all movies having at least one match including a list of matching files. Could be more than one.</returns>
-        internal IEnumerable<TitleMatch> FindMatchingTitles(string path, string filter)
+        public IEnumerable<TitleMatch> FindMatchingTitles(string path, string filter)
         {
             logger.LogInformation("Find matching files");
             var matchList = new BlockingCollection<TitleMatch>();
