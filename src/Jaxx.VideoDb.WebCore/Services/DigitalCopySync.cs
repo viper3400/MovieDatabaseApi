@@ -161,7 +161,7 @@ namespace Jaxx.VideoDb.WebCore.Services
                     var filename = $"\"{entry.matchingFiles.FirstOrDefault().FullName}\"";
                     context.VideoData.Where(item => item.id == entry.Movie.id).FirstOrDefault().filename = filename;
                     context.SaveChanges();
-                } logger.LogWarning("Can't update filename for title '{0}' because multiple files matches were found.", entry.Movie.title);
+                } else if (entry.matchingFiles.Count() > 1) logger.LogWarning("Can't update filename for title '{0}' because multiple files matches were found.", entry.Movie.title);
             }
         }
 
