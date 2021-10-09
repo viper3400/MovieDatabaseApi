@@ -11,15 +11,15 @@ using System.Threading.Tasks;
 
 namespace MovieDatabaseCLI
 {
-    public class FindMatchesWoker : IHostedService
+    public class FindMatchesWorker : IHostedService
     {
         private readonly IHostApplicationLifetime hostLifetime;
-        private readonly ILogger<FindMatchesWoker> logger;
+        private readonly ILogger<FindMatchesWorker> logger;
         private readonly DigitalCopySync digitalCopySync;
         private readonly FindMatchesOptions options;
         private int? exitCode;
 
-        public FindMatchesWoker(IHostApplicationLifetime hostLifetime, ILogger<FindMatchesWoker> logger, DigitalCopySync digitalCopySync, FindMatchesOptions options)
+        public FindMatchesWorker(IHostApplicationLifetime hostLifetime, ILogger<FindMatchesWorker> logger, DigitalCopySync digitalCopySync, FindMatchesOptions options)
         {
             this.hostLifetime = hostLifetime;
             this.logger = logger;

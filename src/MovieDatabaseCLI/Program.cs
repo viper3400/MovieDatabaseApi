@@ -40,7 +40,7 @@ namespace MovieDatabaseCLI
                 host.ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton(options);
-                    services.AddHostedService<FindMatchesWoker>();
+                    services.AddHostedService<FindMatchesWorker>();
                 });
                 await host.RunConsoleAsync();
             });
