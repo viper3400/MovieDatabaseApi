@@ -124,6 +124,13 @@ namespace Jaxx.VideoDb.WebCore.Services
              }
         }
 
+        /// <summary>
+        /// Check for each db entry without a filename if there is a match
+        /// with a file from storage
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="filter"></param>
+        /// <returns>Returns a list with all movies having at least one match including a list of matching files. Could be more than one.</returns>
         internal IEnumerable<TitleMatch> FindMatchingTitles(string path, string filter)
         {
             logger.LogInformation("Find matching files");
@@ -141,7 +148,12 @@ namespace Jaxx.VideoDb.WebCore.Services
             return matchList;
         }
 
-        public void UpdateFilenames(IEnumerable<TitleMatch> updateList)
+        /// <summary>
+        /// Updates the db filename of the given movies, if a unique file match is available.
+        /// Otherwhise creates a log warning.
+        /// </summary>
+        /// <param name="updateList"></param>
+        public void UpdateDbFilenames(IEnumerable<TitleMatch> updateList)
         {
             foreach (var entry in updateList)
             {
@@ -155,7 +167,13 @@ namespace Jaxx.VideoDb.WebCore.Services
             }
         }
 
-        public IEnumerable<FileInfo> FindFilesWithoDbEntries(string path, string filter)
+        /// <summary>
+        /// Checks for each storage file if a db entry exisits.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="filter"></param>
+        /// <returns>A list of files which have no match at db.</returns>
+        public IEnumerable<FileInfo> FindFilesWithoutDbEntries(string path, string filter)
         {
             var files = GetAllFilesFromStorage(path, filter);
             var dbEntriesWithFilename = GetDbEntriesWithFilename();
