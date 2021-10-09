@@ -138,7 +138,7 @@ namespace Jaxx.VideoDb.WebCore.Services
 
             Parallel.ForEach(dbEntriesWithoutFilename, entry =>
             {
-                var matches = files.Where(file => file.Directory.Name.ToLower() == entry.title.ToLower() || file.Directory.Name.ToLower() == $"{entry.title.ToLower()} {entry.subtitle?.ToLower()}");
+                var matches = files.Where(file => file.Directory.Name.ToLower() == entry.title.ToLower() || file.Directory.Name.ToLower() == $"{entry.title.ToLower()} - {entry.subtitle?.ToLower()}");
                 matchList.Add(new TitleMatch { Movie = entry, matchingFiles = matches });
 
             });
