@@ -42,7 +42,7 @@ namespace MovieDatabaseCLI
                 
                 if (File.Exists(options.Output)) File.Delete(options.Output);
                 
-                File.AppendAllLines(options.Output, orphanedFiles.Select(file => file.FullName).ToList());
+                File.AppendAllLines(options.Output, orphanedFiles.Select(file => $"\"{file.FullName}\"").ToList());
             }
             finally
             {
