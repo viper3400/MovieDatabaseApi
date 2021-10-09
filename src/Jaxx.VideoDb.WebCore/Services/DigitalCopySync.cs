@@ -138,7 +138,25 @@ namespace Jaxx.VideoDb.WebCore.Services
 
             Parallel.ForEach(dbEntriesWithoutFilename, entry =>
             {
-                var matches = files.Where(file => file.Directory.Name.ToLower() == entry.title.ToLower() || file.Directory.Name.ToLower() == $"{entry.title.ToLower()} - {entry.subtitle?.ToLower()}");
+                var escapedEntryTitle = entry.title
+                    .Replace(":", " -")
+                    .Replace("&", "und")
+                    .Replace("ß","ss")
+                    .Replace("!", string.Empty)
+                    .Replace("?", string.Empty)
+                    .Replace("'", string.Empty)
+                    .ToLower();
+
+                var escpatedEntrySubtitle = entry.subtitle?
+                    .Replace(":", " -")
+                    .Replace("&", "und")
+                    .Replace("ß", "ss")
+                    .Replace("!", string.Empty)
+                    .Replace("?", string.Empty)
+                    .Replace("'", string.Empty)
+                    .ToLower();
+
+                var matches = files.Where(file => file.Directory.Name.ToLower() == escapedEntryTitle || file.Directory.Name.ToLower() == $"{escapedEntryTitle} - {escpatedEntrySubtitle}");
                 matchList.Add(new TitleMatch { Movie = entry, matchingFiles = matches });
 
             });
