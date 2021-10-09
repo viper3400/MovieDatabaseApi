@@ -49,24 +49,6 @@ namespace MovieDatabaseCLI
 
             return Environment.ExitCode;
 
-
-            /*Console.WriteLine("Starting host ...");
-             var host = CliHost.Host().ConfigureServices((hostContext, services) => 
-
-             services.AddHostedService<Worker>()) ;
-
-             await host.RunConsoleAsync();*/
-
-
-
-            //var digitalCopySync = host.Services.GetService(typeof(DigitalCopySync)) as DigitalCopySync;
-            //Console.WriteLine("Start search ....");
-            //System.Threading.Tasks.Task<System.Collections.Generic.List<string>> task = digitalCopySync.ScanDigitalCopies("V:\\Filme", "*.mkv");
-            //Console.WriteLine("Writing file ....");
-            //System.IO.File.AppendAllLines("D:\\result.txt", task.Result);
-            //Console.WriteLine("Stopping host ....");
-            //await host.StopAsync();
-            //Console.WriteLine("Finished!");
         }
     }
 }
