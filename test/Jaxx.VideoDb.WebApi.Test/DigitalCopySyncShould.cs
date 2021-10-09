@@ -5,26 +5,53 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
+using Microsoft.Extensions.Logging;
 
 namespace Jaxx.VideoDb.WebApi.Test
 {
     public class DigitalCopySyncShould
     {
         private readonly DigitalCopySync digitalCopySync;
+        private readonly ITestOutputHelper testOutputHelper;
+        private readonly ILogger logger;
 
-        public DigitalCopySyncShould()
+        public DigitalCopySyncShould(ITestOutputHelper testOutputHelper)
         {
+            var loggerFactory = new LoggerFactory();
+            loggerFactory.AddProvider(new XunitLoggerProvider(testOutputHelper));
+            logger = loggerFactory.CreateLogger<DigitalCopySync>();
+
             var host = TestMovieDataServiceHost.Host().Build();
             host.StartAsync().Wait();
             digitalCopySync = host.Services.GetService(typeof(DigitalCopySync)) as DigitalCopySync;
         }
-        
+
         [Fact]
-        public async void ScanDigitalCopies()
+        [Trait("Category", "Online")]
+        public void GetAllEntriesWithAFileNameSet()
         {
-            var result = await digitalCopySync.ScanDigitalCopies("V:\\Filme", "*.mkv");
-            System.IO.File.AppendAllLines("D:\\result.txt", result);
-        
+            var result = digitalCopySync.GetDbEntriesWithFilename();
+            Assert.Equal("\"V:\\Filme\\Was nützt die Liebe in Gedanken\\Was nützt die Liebe in Gedanken.mkv\"", result.Where(item => item.title == "Was nützt die Liebe in Gedanken").FirstOrDefault().filename);
+            Assert.Equal(1740, result.Count());
+        }
+
+        [Fact]
+        [Trait("Category", "Online")]
+        public void GetExistingFileLists()
+        {
+            var result = digitalCopySync.CheckFilesOnStorage();
+            Assert.Equal(1740, result.EntriesAll.Count);
+            Assert.Single(result.EntriesWhereFileNotExists);
+            Assert.Equal(1739, result.EntriesWhereFileExists.Count);
+        }
+
+        [Fact]
+        [Trait("Category", "Online")]
+        public void ClearFilenameForNotExistingFiles()
+        {
+            var existingFilesList = digitalCopySync.CheckFilesOnStorage();
+            digitalCopySync.ClearFilenameForNotExistingFiles(existingFilesList.EntriesWhereFileNotExists);
         }
     }
 }
