@@ -14,7 +14,7 @@ namespace MovieDatabaseCLI
         static int Main(string[] args)
         {
 
-            Parser.Default.ParseArguments<OrphanFilesOptions, CheckFilesExistsOptions, FindMatchesOptions, Line2ClipOptions>(args)
+            Parser.Default.ParseArguments<OrphanFilesOptions, CheckFilesExistsOptions, FindMatchesOptions, Line2ClipOptions, EntriesWithoutFilenameOptions, EntriesWithSameFilenameOptions>(args)
             .WithParsed<OrphanFilesOptions>(async options =>
             {
                 var host = CliHost.Host();
@@ -25,7 +25,7 @@ namespace MovieDatabaseCLI
                 });
                 await host.RunConsoleAsync();
             })
-            .WithParsed<CheckFilesExistsOptions>(async options => 
+            .WithParsed<CheckFilesExistsOptions>(async options =>
             {
                 var host = CliHost.Host();
                 host.ConfigureServices((hostContext, services) =>
@@ -44,8 +44,28 @@ namespace MovieDatabaseCLI
                 });
                 await host.RunConsoleAsync();
             })
+            .WithParsed<EntriesWithoutFilenameOptions>(async options =>
+            {
+                var host = CliHost.Host();
+                host.ConfigureServices((hostContext, services) =>
+                {
+                    services.AddSingleton(options);
+                    services.AddHostedService<EntriesWithoutFileWorker>();
+                });
+                await host.RunConsoleAsync();
+            })
+            .WithParsed<EntriesWithSameFilenameOptions>(async options =>
+            {
+                var host = CliHost.Host();
+                host.ConfigureServices((hostContext, services) =>
+                {
+                    services.AddSingleton(options);
+                    services.AddHostedService<EntriesWithSameFilenameWorker>();
+                });
+                await host.RunConsoleAsync();
+            })
             .WithParsed<Line2ClipOptions>(options =>
-            { 
+            {
                 var l2c = new Line2Clip(options.Input);
                 l2c.Start();
             });

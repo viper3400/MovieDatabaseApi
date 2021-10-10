@@ -33,6 +33,13 @@ namespace MovieDatabaseCLI
         public bool Clear { get; set; }
     }
 
+    [Verb("entries-with-same-filename", HelpText = "Get all filename that are set at multiple db entries..")]
+    public class EntriesWithSameFilenameOptions
+    {
+        [Option('o', "output", Required = true, HelpText = "Filepath and name for the output file.")]
+        public string Output { get; set; }
+    }
+
     [Verb("find-matches", HelpText = "Try to find matches for db entries without a filename set.")]
     public class FindMatchesOptions
     {
@@ -48,6 +55,14 @@ namespace MovieDatabaseCLI
 
         [Option('u', "update", HelpText = "Update db filename field for entries where a unique file match has been found.")]
         public bool Update { get; set; }
+
+    }
+
+    [Verb("entries-without-file", HelpText = "Find db entries without a filename set.")]
+    public class EntriesWithoutFilenameOptions
+    {
+        [Option('o', "output", Required = true, HelpText = "Filepath and name for the output file.")]
+        public string Output { get; set; }
 
     }
 

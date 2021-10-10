@@ -2,6 +2,7 @@
 using Jaxx.VideoDb.Data.Context;
 using Jaxx.VideoDb.Data.DatabaseModels;
 using Jaxx.WebApi.Shared.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -55,9 +56,9 @@ namespace Jaxx.VideoDb.WebCore.Services
         /// Get all entries from DB that have no filename set
         /// </summary>
         /// <returns></returns>
-        internal IEnumerable<videodb_videodata> GetDbEntriesWithoutFileName()
+        public IEnumerable<videodb_videodata> GetDbEntriesWithoutFileName()
         {
-            var result = context.VideoData.Where(item => string.IsNullOrWhiteSpace(item.filename) && item.owner_id != options.DeletedUserId).ToList();
+            var result = context.VideoData.Include(m => m.VideoMediaType).Where(item => string.IsNullOrWhiteSpace(item.filename) && item.owner_id != options.DeletedUserId).ToList();
             logger.LogDebug("Found {0} db entries without a filename.", result.Count);
             return result;
         }
@@ -77,6 +78,25 @@ namespace Jaxx.VideoDb.WebCore.Services
                 fileInfoList.Add(new FileInfo(file));
             }
             return fileInfoList;
+        }
+
+        /// <summary>
+        /// Gets a grouped list for db entries, which have the same filename and therefore
+        /// the filename is given for multiple movies at the same time
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<IGrouping<string, videodb_videodata>> GetDbEntriesWithSameFileName()
+        {
+
+            var resultList = new List<IGrouping<string, videodb_videodata>>();
+            var groupedResult = GetDbEntriesWithFilename().GroupBy(item => item.filename);
+            foreach (var group in groupedResult)
+            {
+                if (group.Count() > 1) resultList.Add(group);
+            }
+   
+            logger.LogDebug("Found {0} filenames which are set multiple times.", resultList.Count);
+            return resultList;
         }
 
         /// <summary>
