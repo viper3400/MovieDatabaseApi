@@ -45,10 +45,17 @@ namespace MovieDatabaseCLI
 
         [Option('o', "output", Required = true, HelpText = "Filepath and name for the output file.")]
         public string Output { get; set; }
-        
+
         [Option('u', "update", HelpText = "Update db filename field for entries where a unique file match has been found.")]
         public bool Update { get; set; }
 
+    }
+
+    [Verb("line2clip", HelpText = "Copy line for line into clipboard.")]
+    public class Line2ClipOptions
+    {
+        [Option('i', "input", Required = true, HelpText = "Filepath and name for the input file.")]
+        public string Input { get; set; }
     }
 }
 

@@ -14,7 +14,7 @@ namespace MovieDatabaseCLI
         static int Main(string[] args)
         {
 
-            Parser.Default.ParseArguments<OrphanFilesOptions, CheckFilesExistsOptions, FindMatchesOptions>(args)
+            Parser.Default.ParseArguments<OrphanFilesOptions, CheckFilesExistsOptions, FindMatchesOptions, Line2ClipOptions>(args)
             .WithParsed<OrphanFilesOptions>(async options =>
             {
                 var host = CliHost.Host();
@@ -43,6 +43,11 @@ namespace MovieDatabaseCLI
                     services.AddHostedService<FindMatchesWorker>();
                 });
                 await host.RunConsoleAsync();
+            })
+            .WithParsed<Line2ClipOptions>(options =>
+            { 
+                var l2c = new Line2Clip(options.Input);
+                l2c.Start();
             });
 
             //.WithNotParsed(errors => Console.WriteLine(errors));
