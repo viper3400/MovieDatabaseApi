@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using Microsoft.Extensions.Logging;
+using Jaxx.VideoDb.Data.DatabaseModels;
+using System.IO.Abstractions.TestingHelpers;
+using Microsoft.Extensions.DependencyInjection;
+using System.IO.Abstractions;
 
 namespace Jaxx.VideoDb.WebApi.Test
 {
@@ -18,6 +22,9 @@ namespace Jaxx.VideoDb.WebApi.Test
 
         public DigitalCopySyncShould(ITestOutputHelper testOutputHelper)
         {
+
+         
+
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddProvider(new XunitLoggerProvider(testOutputHelper));
             logger = loggerFactory.CreateLogger<DigitalCopySync>();
@@ -33,7 +40,7 @@ namespace Jaxx.VideoDb.WebApi.Test
         {
             var result = digitalCopySync.GetDbEntriesWithFilename();
             Assert.Equal("\"V:\\Filme\\Was nützt die Liebe in Gedanken\\Was nützt die Liebe in Gedanken.mkv\"", result.Where(item => item.title == "Was nützt die Liebe in Gedanken").FirstOrDefault().filename);
-            Assert.Equal(1740, result.Count());
+            Assert.Equal(1958, result.Count());
         }
 
         [Fact]
@@ -41,9 +48,9 @@ namespace Jaxx.VideoDb.WebApi.Test
         public void GetExistingFileLists()
         {
             var result = digitalCopySync.CheckFilesOnStorage();
-            Assert.Equal(1740, result.EntriesAll.Count);
-            Assert.Single(result.EntriesWhereFileNotExists);
-            Assert.Equal(1739, result.EntriesWhereFileExists.Count);
+            Assert.Equal(1958, result.EntriesAll.Count);
+            Assert.Empty(result.EntriesWhereFileNotExists);
+            Assert.Equal(1958, result.EntriesWhereFileExists.Count);
         }
 
         [Fact]
@@ -53,5 +60,6 @@ namespace Jaxx.VideoDb.WebApi.Test
             var existingFilesList = digitalCopySync.CheckFilesOnStorage();
             digitalCopySync.ClearFilenameForNotExistingFiles(existingFilesList.EntriesWhereFileNotExists);
         }
+
     }
 }

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace Jaxx.VideoDb.WebCore.Services
         private readonly ILogger<DigitalCopySync> logger;
         private readonly VideoDbContext context;
         private readonly MovieDataServiceOptions options;
+        private readonly IFileSystem fileSystem;
 
         /// <summary>
         /// Holds three BlockingCollection<videodb_videodata>
@@ -33,14 +35,25 @@ namespace Jaxx.VideoDb.WebCore.Services
         public struct TitleMatch
         {
             public videodb_videodata Movie;
-            public IEnumerable<FileInfo> matchingFiles;
+            public IEnumerable<IFileInfo> matchingFiles;
         }
+
+        public DigitalCopySync(ILogger<DigitalCopySync> logger, VideoDbContext context, MovieDataServiceOptions options, IFileSystem fileSystem)
+        {
+            this.logger = logger;
+            this.context = context;
+            this.options = options;
+            this.fileSystem = fileSystem;
+        }
+
         public DigitalCopySync(ILogger<DigitalCopySync> logger, VideoDbContext context, MovieDataServiceOptions options)
         {
             this.logger = logger;
             this.context = context;
             this.options = options;
+            this.fileSystem = new FileSystem();
         }
+
 
         /// <summary>
         /// Get all entries from DB that have a filename set
@@ -69,15 +82,15 @@ namespace Jaxx.VideoDb.WebCore.Services
         /// <param name="path"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        internal static IEnumerable<FileInfo> GetAllFilesFromStorage(string path, string filter)
+        internal IEnumerable<IFileInfo> GetAllFilesFromStorage(string path, string filter)
         {
-            var fileInfoList = new List<FileInfo>();
-            var files = Directory.EnumerateFiles(path, filter, SearchOption.AllDirectories);
+            var fileinfolist = new List<IFileInfo>();
+            var files = fileSystem.Directory.EnumerateFiles(path, filter, SearchOption.AllDirectories);
             foreach (var file in files)
             {
-                fileInfoList.Add(new FileInfo(file));
+                fileinfolist.Add(fileSystem.FileInfo.FromFileName(file));
             }
-            return fileInfoList;
+            return fileinfolist;
         }
 
         /// <summary>
@@ -94,7 +107,7 @@ namespace Jaxx.VideoDb.WebCore.Services
             {
                 if (group.Count() > 1) resultList.Add(group);
             }
-   
+
             logger.LogDebug("Found {0} filenames which are set multiple times.", resultList.Count);
             return resultList;
         }
@@ -123,7 +136,7 @@ namespace Jaxx.VideoDb.WebCore.Services
                     resultLists.EntriesWhereFileExists.Add(movie);
                 else
                     resultLists.EntriesWhereFileNotExists.Add(movie);
-               
+
             });
             return resultLists;
         }
@@ -136,10 +149,10 @@ namespace Jaxx.VideoDb.WebCore.Services
         {
             foreach (var notExistingFile in entriesWhereFileNotExists)
             {
-                    logger.LogWarning($"Deleting filename for movie with id '{notExistingFile.id}' and title '{notExistingFile.title}', filepath was '{notExistingFile.filename}'");
-                    context.VideoData.Where(item => item.id == notExistingFile.id).FirstOrDefault().filename = string.Empty;
-                    context.SaveChanges();
-             }
+                logger.LogWarning($"Deleting filename for movie with id '{notExistingFile.id}' and title '{notExistingFile.title}', filepath was '{notExistingFile.filename}'");
+                context.VideoData.Where(item => item.id == notExistingFile.id).FirstOrDefault().filename = string.Empty;
+                context.SaveChanges();
+            }
         }
 
         /// <summary>
@@ -155,13 +168,14 @@ namespace Jaxx.VideoDb.WebCore.Services
             var matchList = new BlockingCollection<TitleMatch>();
             var files = GetAllFilesFromStorage(path, filter);
             var dbEntriesWithoutFilename = GetDbEntriesWithoutFileName();
+            var dbEntriesWithFilename = GetDbEntriesWithFilename();
 
             Parallel.ForEach(dbEntriesWithoutFilename, entry =>
             {
                 var escapedEntryTitle = entry.title
                     .Replace(":", " -")
                     .Replace("&", "und")
-                    .Replace("ß","ss")
+                    .Replace("ß", "ss")
                     .Replace("!", string.Empty)
                     .Replace("?", string.Empty)
                     .Replace("'", string.Empty)
@@ -177,11 +191,32 @@ namespace Jaxx.VideoDb.WebCore.Services
                     .ToLower();
 
                 var matches = files.Where(file => file.Directory.Name.ToLower() == escapedEntryTitle || file.Directory.Name.ToLower() == $"{escapedEntryTitle} - {escpatedEntrySubtitle}");
+                matches = ExcludeFileNamesAlreadyInUse(matches, dbEntriesWithFilename);
                 matchList.Add(new TitleMatch { Movie = entry, matchingFiles = matches });
 
             });
 
             return matchList;
+        }
+
+        internal IEnumerable<IFileInfo> ExcludeFileNamesAlreadyInUse(IEnumerable<IFileInfo> fileInfos, IEnumerable<videodb_videodata> dbEntriesWithFiles)
+        {
+
+            var fileListWithExcludedFiles = new BlockingCollection<IFileInfo>();
+
+            Parallel.ForEach(fileInfos, file =>
+            {
+                var dbEntriesWithCurrentFileName = dbEntriesWithFiles.Where(i => i.filename.Contains(file.FullName));
+                if (dbEntriesWithCurrentFileName.Count() > 0)
+                {
+                    logger.LogWarning("Filename '{0}' already in use for movie '{1}', dropping filename from list.", file.FullName, dbEntriesWithCurrentFileName.FirstOrDefault().title);
+                } else
+                {
+                    logger.LogDebug("Add filename '{0}' to list", file.FullName);
+                    fileListWithExcludedFiles.Add(file);
+                }
+            });
+            return fileListWithExcludedFiles;
         }
 
         /// <summary>
@@ -199,7 +234,8 @@ namespace Jaxx.VideoDb.WebCore.Services
                     var filename = $"\"{entry.matchingFiles.FirstOrDefault().FullName}\"";
                     context.VideoData.Where(item => item.id == entry.Movie.id).FirstOrDefault().filename = filename;
                     context.SaveChanges();
-                } else if (entry.matchingFiles.Count() > 1) logger.LogWarning("Can't update filename for title '{0}' because multiple files matches were found.", entry.Movie.title);
+                }
+                else if (entry.matchingFiles.Count() > 1) logger.LogWarning("Can't update filename for title '{0}' because multiple files matches were found.", entry.Movie.title);
             }
         }
 
@@ -209,11 +245,11 @@ namespace Jaxx.VideoDb.WebCore.Services
         /// <param name="path"></param>
         /// <param name="filter"></param>
         /// <returns>A list of files which have no match at db.</returns>
-        public IEnumerable<FileInfo> FindFilesWithoutDbEntries(string path, string filter)
+        public IEnumerable<IFileInfo> FindFilesWithoutDbEntries(string path, string filter)
         {
             var files = GetAllFilesFromStorage(path, filter);
             var dbEntriesWithFilename = GetDbEntriesWithFilename();
-            var filesWithoutDbEntry = new BlockingCollection<FileInfo>();
+            var filesWithoutDbEntry = new BlockingCollection<IFileInfo>();
 
             Parallel.ForEach(files, file =>
             {
