@@ -42,7 +42,7 @@ namespace MovieDatabaseCLI
 
                 File.AppendAllText(options.Output, $"{fileMatchCount};{title};{matches}{Environment.NewLine}");
             }
-            logger.LogInformation("Created ouput file at '{0}'", options.Output);
+            logger.LogInformation("Created output file at '{0}'", options.Output);
 
             if (options.Update)
             {

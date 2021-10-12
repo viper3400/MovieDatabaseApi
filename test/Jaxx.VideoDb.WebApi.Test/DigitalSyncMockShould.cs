@@ -85,7 +85,7 @@ namespace Jaxx.VideoDb.WebApi.Test
             };
 
             var actual = digitalCopySync.FindMatchingTitles("V:", "*.mkv");
-            Assert.Equal(629, actual.Count());
+            Assert.Equal(614, actual.Count());
             var x = actual.SelectMany(s => s.matchingFiles);
             Assert.Single(x.Where(m => m.FullName == @"V:\UnitTestMovie 4\UnitTestMovie 4.mkv"));
             Assert.Empty(x.Where(m => m.FullName == @"V:\UnitTestMovie 2\UnitTestMovie 2.mkv"));
@@ -98,7 +98,7 @@ namespace Jaxx.VideoDb.WebApi.Test
         public void GetAllFilesFromStorage()
         {
             var result = digitalCopySync.GetAllFilesFromStorage("V:", "*.mkv");
-            Assert.Equal(4, result.Count());
+            Assert.Equal(7, result.Count());
             Assert.Contains(@"V:\UnitTestMovie 2\UnitTestMovie 2.mkv", result.Select(i => i.FullName));
         }
 
@@ -109,8 +109,8 @@ namespace Jaxx.VideoDb.WebApi.Test
         {
             var orpahns = digitalCopySync.FindFilesWithoutDbEntries("V:", "*.mkv");
             Assert.Equal(2, orpahns.Count());
-            Assert.Contains(@"V:\UnitTestMovie Orphan 1\UnitTestMovie Orphan 1.mkv", orpahns.Select(o => o.FullName));
             Assert.Contains(@"V:\UnitTestMovie 4\UnitTestMovie 4.mkv", orpahns.Select(o => o.FullName));
+            Assert.Contains(@"V:\UnitTestMovie Orphan 1\UnitTestMovie Orphan 1.mkv", orpahns.Select(o => o.FullName));
         }
 
         private void TearUpFileSystem()
@@ -122,10 +122,12 @@ namespace Jaxx.VideoDb.WebApi.Test
                 { @"c:\demo\jQuery.js", new MockFileData("some js") },
                 { @"c:\demo\image.gif", new MockFileData(new byte[] { 0x12, 0x34, 0x56, 0xd2 }) },
                 { @"V:\UnitTestMovie 1\UnitTestMovie 1.mkv", new MockFileData("movie 1") },
+                { @"V:\UnitTestMovie 1\UnitTestMovie 1 Part 2.mkv", new MockFileData("movie 1 part 2") },
                 { @"V:\UnitTestMovie 2\UnitTestMovie 2.mkv", new MockFileData("movie 2") },
                 { @"V:\UnitTestMovie 4\UnitTestMovie 4.mkv", new MockFileData("movie 4") },
                 { @"V:\UnitTestMovie Orphan 1\UnitTestMovie Orphan 1.mkv", new MockFileData("orpahn 1") },
-                { @"V:\Filme\Was nützt die Liebe in Gedanken\Was nützt die Liebe in Gedanken.mkv", new MockFileData("Was nützt die ...") }
+                { @"V:\Filme\Was nützt die Liebe in Gedanken\Was nützt die Liebe in Gedanken.mkv", new MockFileData("Was nützt die ...") },
+                { @"V:\Filme\Die Schlümpfe - Das verlorene Dorf\Die Schlümpfe - Das verlorene Dorf - 3D.mkv", new MockFileData("Schlümpfe ...") }
             });
         }
 

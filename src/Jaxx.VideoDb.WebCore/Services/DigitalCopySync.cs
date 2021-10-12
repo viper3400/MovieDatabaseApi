@@ -257,11 +257,16 @@ namespace Jaxx.VideoDb.WebCore.Services
             var dbEntriesWithFilename = GetDbEntriesWithFilename();
             var filesWithoutDbEntry = new BlockingCollection<IFileInfo>();
 
-            Parallel.ForEach(files, file =>
-            {
-                var matches = dbEntriesWithFilename.Where(item => item.filename.Replace("\"", string.Empty) == file.FullName);
-                if (!matches.Any()) filesWithoutDbEntry.Add(file);
-            });
+            _ = Parallel.ForEach(files, file =>
+              {
+                  var exactMatches = dbEntriesWithFilename.Where(item => item.filename.Replace("\"", string.Empty) == file.FullName);
+                  var directoryMatches = dbEntriesWithFilename.Select(item => fileSystem.FileInfo.FromFileName(item.filename.Replace("\"", string.Empty)).DirectoryName).Where(d => d == file.DirectoryName);
+                  if (!exactMatches.Any() && !directoryMatches.Any())
+                  {
+                      logger.LogInformation("Found file without db entry: '{0}'", file.FullName);
+                      filesWithoutDbEntry.Add(file);
+                  }
+              });
 
             return filesWithoutDbEntry;
         }
