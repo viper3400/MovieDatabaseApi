@@ -102,6 +102,17 @@ namespace Jaxx.VideoDb.WebApi.Test
             Assert.Contains(@"V:\UnitTestMovie 2\UnitTestMovie 2.mkv", result.Select(i => i.FullName));
         }
 
+
+        [Fact]
+        [Trait("Category", "Online")]
+        public void FindFilesWithoutDbEntries()
+        {
+            var orpahns = digitalCopySync.FindFilesWithoutDbEntries("V:", "*.mkv");
+            Assert.Equal(2, orpahns.Count());
+            Assert.Contains(@"V:\UnitTestMovie Orphan 1\UnitTestMovie Orphan 1.mkv", orpahns.Select(o => o.FullName));
+            Assert.Contains(@"V:\UnitTestMovie 4\UnitTestMovie 4.mkv", orpahns.Select(o => o.FullName));
+        }
+
         private void TearUpFileSystem()
         {
             // Create mocked file system
@@ -113,6 +124,7 @@ namespace Jaxx.VideoDb.WebApi.Test
                 { @"V:\UnitTestMovie 1\UnitTestMovie 1.mkv", new MockFileData("movie 1") },
                 { @"V:\UnitTestMovie 2\UnitTestMovie 2.mkv", new MockFileData("movie 2") },
                 { @"V:\UnitTestMovie 4\UnitTestMovie 4.mkv", new MockFileData("movie 4") },
+                { @"V:\UnitTestMovie Orphan 1\UnitTestMovie Orphan 1.mkv", new MockFileData("orpahn 1") },
                 { @"V:\Filme\Was nützt die Liebe in Gedanken\Was nützt die Liebe in Gedanken.mkv", new MockFileData("Was nützt die ...") }
             });
         }

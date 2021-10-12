@@ -23,9 +23,6 @@ namespace Jaxx.VideoDb.WebApi.Test
 
         public DigitalCopySyncShould(ITestOutputHelper testOutputHelper)
         {
-
-         
-
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddProvider(new XunitLoggerProvider(testOutputHelper));
             logger = loggerFactory.CreateLogger<DigitalCopySync>();
