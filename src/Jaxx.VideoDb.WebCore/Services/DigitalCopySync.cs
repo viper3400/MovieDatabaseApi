@@ -199,6 +199,12 @@ namespace Jaxx.VideoDb.WebCore.Services
             return matchList;
         }
 
+        /// <summary>
+        /// Iterates through a the list of IFileInfo and removes items, that are already set as filename at another db entry.
+        /// </summary>
+        /// <param name="fileInfos"></param>
+        /// <param name="dbEntriesWithFiles"></param>
+        /// <returns></returns>
         internal IEnumerable<IFileInfo> ExcludeFileNamesAlreadyInUse(IEnumerable<IFileInfo> fileInfos, IEnumerable<videodb_videodata> dbEntriesWithFiles)
         {
 
