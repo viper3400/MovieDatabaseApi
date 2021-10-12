@@ -14,6 +14,7 @@ using System.IO.Abstractions;
 
 namespace Jaxx.VideoDb.WebApi.Test
 {
+    [Collection("AutoMapperCollection")]
     public class DigitalCopySyncShould
     {
         private readonly DigitalCopySync digitalCopySync;

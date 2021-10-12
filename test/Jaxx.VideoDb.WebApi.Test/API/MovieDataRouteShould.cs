@@ -138,6 +138,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
         }
 
         [Fact]
+        [Trait("Category", "Online")]
         public async Task GetMovieDataWithFilterForListOfMediaTypes()
         {
             var expectedCount = 1648;
@@ -246,6 +247,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
         }
 
         [Fact]
+        [Trait("Category", "Online")]
         public async void GetWatchAgainMovies()
         {
             var response = await _client.GetAsync("/MovieData/watchagain");

@@ -19,6 +19,7 @@ using System.Threading;
 
 namespace Jaxx.VideoDb.WebApi.Test
 {
+    [Collection("AutoMapperCollection")]
     public class DigitalCopySyncMockShould : IDisposable
     {
         private readonly DigitalCopySync digitalCopySync;
@@ -73,6 +74,7 @@ namespace Jaxx.VideoDb.WebApi.Test
 
         //[Fact(Skip ="DbContext not injected")]
         [Fact]
+        [Trait("Category", "Online")]
         public void FindMatchingTitles()
         {
             var fileInfos = new List<IFileInfo>
@@ -92,6 +94,7 @@ namespace Jaxx.VideoDb.WebApi.Test
         }
 
         [Fact]
+        [Trait("Category", "Online")]
         public void GetAllFilesFromStorage()
         {
             var result = digitalCopySync.GetAllFilesFromStorage("V:", "*.mkv");
