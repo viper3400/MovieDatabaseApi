@@ -11,29 +11,25 @@ using Jaxx.VideoDb.Data.DatabaseModels;
 using System.IO.Abstractions.TestingHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO.Abstractions;
+using Jaxx.VideoDb.Data.Context;
+using Microsoft.EntityFrameworkCore;
+using Jaxx.VideoDb.WebCore.Models;
+using Jaxx.WebApi.Shared.Models;
+using System.Threading;
 
 namespace Jaxx.VideoDb.WebApi.Test
 {
-    public class DigitalCopySyncMockShould
+    public class DigitalCopySyncMockShould : IDisposable
     {
         private readonly DigitalCopySync digitalCopySync;
+        private readonly IMovieDataService movieDataService;
         private readonly ITestOutputHelper testOutputHelper;
         private readonly ILogger logger;
-        private readonly MockFileSystem fileSystem;
+        private MockFileSystem fileSystem;
 
         public DigitalCopySyncMockShould(ITestOutputHelper testOutputHelper)
         {
-
-            fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
-            {
-                { @"c:\myfile.txt", new MockFileData("Testing is meh.") },
-                { @"c:\demo\jQuery.js", new MockFileData("some js") },
-                { @"c:\demo\image.gif", new MockFileData(new byte[] { 0x12, 0x34, 0x56, 0xd2 }) },
-                { @"V:\Movie 1\Movie 1.mkv", new MockFileData("movie 1") },
-                { @"V:\Movie 2\Movie 2.mkv", new MockFileData("movie 2") },
-                { @"V:\Movie 4\Movie 4.mkv", new MockFileData("movie 4") },
-                { @"V:\Filme\Was nützt die Liebe in Gedanken\Was nützt die Liebe in Gedanken.mkv", new MockFileData("Was nützt die ...") }
-            });
+            TearUpFileSystem();
 
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddProvider(new XunitLoggerProvider(testOutputHelper));
@@ -47,6 +43,9 @@ namespace Jaxx.VideoDb.WebApi.Test
                 .Build();
             host.StartAsync().Wait();
             digitalCopySync = host.Services.GetService(typeof(DigitalCopySync)) as DigitalCopySync;
+            movieDataService = host.Services.GetService(typeof(IMovieDataService)) as IMovieDataService;
+
+            TearUpDatabase().Wait();
         }
 
         [Fact]
@@ -54,52 +53,41 @@ namespace Jaxx.VideoDb.WebApi.Test
         {
             var entriesWithFilename = new List<videodb_videodata>
             {
-                new videodb_videodata { id = 4, title = "Movie 1", filename = "V:\\Movie 1\\Movie 1.mkv"},
-                new videodb_videodata { id = 5, title = "Movie 2", filename = "V:\\Movie 2\\Movie 2.mkv"},
+                new videodb_videodata { id = 4, title = "UnitTestMovie 1", filename = "V:\\UnitTestMovie 1\\UnitTestMovie 1.mkv"},
+                new videodb_videodata { id = 5, title = "UnitTestMovie 2", filename = "V:\\UnitTestMovie 2\\UnitTestMovie 2.mkv"},
             };
 
             var result = digitalCopySync.GetAllFilesFromStorage("V:", "*.mkv");
             var fileInfos = new List<IFileInfo>
             {
-                new MockFileInfo(fileSystem, @"V:\Movie 2\Movie 2.mkv"),
-                new MockFileInfo(fileSystem, @"V:\Movie 1\Movie 1.mkv"),
-                new MockFileInfo(fileSystem, @"V:\Movie 4\Movie 4.mkv")
+                new MockFileInfo(fileSystem, @"V:\UnitTestMovie 2\UnitTestMovie 2.mkv"),
+                new MockFileInfo(fileSystem, @"V:\UnitTestMovie 1\UnitTestMovie 1.mkv"),
+                new MockFileInfo(fileSystem, @"V:\UnitTestMovie 4\UnitTestMovie 4.mkv")
             };
 
             var actual = digitalCopySync.ExcludeFileNamesAlreadyInUse(fileInfos, entriesWithFilename);
             Assert.Single(actual);
-            Assert.Contains(@"V:\Movie 4\Movie 4.mkv", result.Select(i => i.FullName));
+            Assert.Contains(@"V:\UnitTestMovie 4\UnitTestMovie 4.mkv", result.Select(i => i.FullName));
 
         }
 
-        [Fact(Skip ="DbContext not injected")]
+        //[Fact(Skip ="DbContext not injected")]
+        [Fact]
         public void FindMatchingTitles()
         {
-            var entriesWithoutFilename = new List<videodb_videodata>
-            {
-                new videodb_videodata { id = 1, title = "Movie 1" },
-                new videodb_videodata { id = 2, title = "Movie 2"},
-                new videodb_videodata { id = 3, title = "Movie 3"},
-                new videodb_videodata { id = 6, title = "Movie 4"},
-            };
-
-            var entriesWithFilename = new List<videodb_videodata>
-            {
-                new videodb_videodata { id = 4, title = "Movie 1", filename = "V:\\Movie 1\\Movie 1.mkv"},
-                new videodb_videodata { id = 5, title = "Movie 2", filename = "V:\\Movie 2\\Movie 2.mkv"},
-            };
-
-            var result = digitalCopySync.GetAllFilesFromStorage("V:", "*.mkv");
             var fileInfos = new List<IFileInfo>
             {
-                new MockFileInfo(fileSystem, @"V:\Movie 2\Movie 2.mkv"),
-                new MockFileInfo(fileSystem, @"V:\Movie 1\Movie 1.mkv"),
-                new MockFileInfo(fileSystem, @"V:\Movie 4\Movie 4.mkv")
+                new MockFileInfo(fileSystem, @"V:\UnitTestMovie 2\UnitTestMovie 2.mkv"),
+                new MockFileInfo(fileSystem, @"V:\UnitTestMovie 1\UnitTestMovie 1.mkv"),
+                new MockFileInfo(fileSystem, @"V:\UnitTestMovie 4\UnitTestMovie 4.mkv")
             };
 
             var actual = digitalCopySync.FindMatchingTitles("V:", "*.mkv");
-            Assert.Single(actual);
-            Assert.Contains(@"V:\Movie 4\Movie 4.mkv", result.Select(i => i.FullName));
+            Assert.Equal(629, actual.Count());
+            var x = actual.SelectMany(s => s.matchingFiles);
+            Assert.Single(x.Where(m => m.FullName == @"V:\UnitTestMovie 4\UnitTestMovie 4.mkv"));
+            Assert.Empty(x.Where(m => m.FullName == @"V:\UnitTestMovie 2\UnitTestMovie 2.mkv"));
+            Assert.Empty(x.Where(m => m.FullName == @"V:\UnitTestMovie 1\UnitTestMovie 1.mkv"));
 
         }
 
@@ -107,8 +95,65 @@ namespace Jaxx.VideoDb.WebApi.Test
         public void GetAllFilesFromStorage()
         {
             var result = digitalCopySync.GetAllFilesFromStorage("V:", "*.mkv");
-            Assert.Equal(3, result.Count());
-            Assert.Contains(@"V:\Movie 2\Movie 2.mkv", result.Select(i => i.FullName));
+            Assert.Equal(4, result.Count());
+            Assert.Contains(@"V:\UnitTestMovie 2\UnitTestMovie 2.mkv", result.Select(i => i.FullName));
+        }
+
+        private void TearUpFileSystem()
+        {
+            // Create mocked file system
+            fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { @"c:\myfile.txt", new MockFileData("Testing is meh.") },
+                { @"c:\demo\jQuery.js", new MockFileData("some js") },
+                { @"c:\demo\image.gif", new MockFileData(new byte[] { 0x12, 0x34, 0x56, 0xd2 }) },
+                { @"V:\UnitTestMovie 1\UnitTestMovie 1.mkv", new MockFileData("movie 1") },
+                { @"V:\UnitTestMovie 2\UnitTestMovie 2.mkv", new MockFileData("movie 2") },
+                { @"V:\UnitTestMovie 4\UnitTestMovie 4.mkv", new MockFileData("movie 4") },
+                { @"V:\Filme\Was nützt die Liebe in Gedanken\Was nützt die Liebe in Gedanken.mkv", new MockFileData("Was nützt die ...") }
+            });
+        }
+
+        private async Task<Task> TearUpDatabase()
+        {
+            var unitTestEntries = new List<MovieDataResource>
+            {
+                new MovieDataResource { title = "UnitTestMovie 1", filename = @"V:\UnitTestMovie 1\UnitTestMovie 1.mkv", diskid="R50F1D01", owner_id = 3, mediatype = 1, Genres = new List<MovieDataGenreResource> { new MovieDataGenreResource { Id = 4} }},
+                new MovieDataResource { title = "UnitTestMovie 2", filename = @"V:\UnitTestMovie 2\UnitTestMovie 2.mkv", diskid="R50F1D02", owner_id = 3, mediatype = 1, Genres = new List<MovieDataGenreResource> { new MovieDataGenreResource { Id = 4} }},
+                new MovieDataResource { title = "UnitTestMovie 3", filename = @"V:\UnitTestMovie 3\UnitTestMovie 3.mkv", diskid="R50F1D03", owner_id = 3, mediatype = 1, Genres = new List<MovieDataGenreResource> { new MovieDataGenreResource { Id = 4} }},
+                new MovieDataResource { title = "UnitTestMovie 4", diskid="R50F1D04", owner_id = 3, mediatype = 16, Genres = new List<MovieDataGenreResource> { new MovieDataGenreResource { Id = 4} }}
+            }; 
+
+            foreach(var entry in unitTestEntries)
+            {
+                var result = await movieDataService.GetMovieDataAsync(null, new PagingOptions { Limit = 100, Offset = 0 }, new MovieDataOptions { Title = entry.title, ExactMatch = true }, new CancellationToken());
+                if (result.TotalSize == 0)
+                {
+                    await movieDataService.CreateMovieDataAsync(entry, new CancellationToken());
+                }
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            var unitTestEntries = new List<MovieDataResource>
+            {
+                new MovieDataResource { title = "UnitTestMovie 1", filename = @"V:\UnitTestMovie 1\UnitTestMovie 1.mkv" },
+                new MovieDataResource { title = "UnitTestMovie 2", filename = @"V:\UnitTestMovie 2\UnitTestMovie 2.mkv" },
+                new MovieDataResource { title = "UnitTestMovie 3", filename = @"V:\UnitTestMovie 3\UnitTestMovie 3.mkv" },
+                new MovieDataResource { title = "UnitTestMovie 4"},
+            };
+
+            foreach (var entry in unitTestEntries)
+            {
+                var result = movieDataService.GetMovieDataAsync(null, new PagingOptions { Limit = 100, Offset = 0 }, new MovieDataOptions { Title = entry.title, ExactMatch = true }, new CancellationToken()).Result;
+                if (result.TotalSize > 0)
+                {
+                    movieDataService.DeleteMovieDataAsync(result.Items.FirstOrDefault().id, new CancellationToken()).Wait();
+                }
+            }
         }
     }
 }
