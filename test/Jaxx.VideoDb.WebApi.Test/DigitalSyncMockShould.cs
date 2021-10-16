@@ -108,7 +108,7 @@ namespace Jaxx.VideoDb.WebApi.Test
         public void FindFilesWithoutDbEntries()
         {
             var orpahns = digitalCopySync.FindFilesWithoutDbEntries("V:", "*.mkv");
-            Assert.Equal(2, orpahns.Count());
+            Assert.Equal(3, orpahns.Count());
             Assert.Contains(@"V:\UnitTestMovie 4\UnitTestMovie 4.mkv", orpahns.Select(o => o.FullName));
             Assert.Contains(@"V:\UnitTestMovie Orphan 1\UnitTestMovie Orphan 1.mkv", orpahns.Select(o => o.FullName));
         }
