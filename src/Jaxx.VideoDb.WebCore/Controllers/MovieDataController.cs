@@ -424,18 +424,25 @@ namespace Jaxx.VideoDb.WebCore.Controllers
          [FromBody] MovieDataOptions movieDataOptions,
          CancellationToken ct)
         {
-            pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
-            pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
+            try
+            {
+                pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
+                pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
+                var movies = await _movieDataService.GetMovieDataAsync(null, pagingOptions, movieDataOptions, ct);
 
-            var movies = await _movieDataService.GetMovieDataAsync(null, pagingOptions, movieDataOptions, ct);
+                var collection = CollectionWithPaging<MovieDataResource>.Create(
+                    Link.ToCollection(nameof(GetMovieDataWithFilterAsync), movieDataOptions),
+                    movies.Items.ToArray(),
+                    movies.TotalSize,
+                    pagingOptions);
 
-            var collection = CollectionWithPaging<MovieDataResource>.Create(
-                Link.ToCollection(nameof(GetMovieDataWithFilterAsync), movieDataOptions),
-                movies.Items.ToArray(),
-                movies.TotalSize,
-                pagingOptions);
-
-            return Ok(collection);
+                return Ok(collection);
+            }
+            catch (OperationCanceledException canceledException) when (ct.IsCancellationRequested)
+            {
+                _logger.LogTrace(canceledException.Message);
+                return NoContent();
+            }
         }
 
         /**
