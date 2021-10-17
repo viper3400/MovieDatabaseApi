@@ -363,18 +363,28 @@ namespace Jaxx.VideoDb.WebCore.Controllers
          [FromQuery] MovieDataOptions movieDataOptions,
          CancellationToken ct)
         {
-            pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
-            pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
+            try
+            {
+                pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
+                pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
 
-            var movies = await _movieDataService.GetMovieDataAsync(null, pagingOptions, movieDataOptions, ct);
+                var movies = await _movieDataService.GetMovieDataAsync(null, pagingOptions, movieDataOptions, ct);
 
-            var collection = CollectionWithPaging<MovieDataResource>.Create(
-                Link.ToCollection(nameof(GetMovieDataAsync), movieDataOptions),
-                movies.Items.ToArray(),
-                movies.TotalSize,
-                pagingOptions);
+                var collection = CollectionWithPaging<MovieDataResource>.Create(
+                    Link.ToCollection(nameof(GetMovieDataAsync), movieDataOptions),
+                    movies.Items.ToArray(),
+                    movies.TotalSize,
+                    pagingOptions);
 
-            return Ok(collection);
+                if (ct.IsCancellationRequested) throw new OperationCanceledException();
+
+                return Ok(collection);
+            }
+            catch (OperationCanceledException canceledException) when (ct.IsCancellationRequested)
+            {
+                _logger.LogTrace(canceledException.Message);
+                return NoContent();
+            }
         }
 
         /**
@@ -489,18 +499,28 @@ namespace Jaxx.VideoDb.WebCore.Controllers
         [FromQuery] MovieDataOptions movieDataOptions,
         CancellationToken ct)
         {
-            pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
-            pagingOptions.Offset = 0;
+            try
+            {
+                pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
+                pagingOptions.Offset = 0;
 
-            var movies = await _movieDataService.GetMovieDataSurpriseAsync((int)pagingOptions.Limit, movieDataOptions, ct);
+                var movies = await _movieDataService.GetMovieDataSurpriseAsync((int)pagingOptions.Limit, movieDataOptions, ct);
 
-            var collection = CollectionWithPaging<MovieDataResource>.Create(
-                Link.ToCollection(nameof(GetMovieDataSurpriseAsync), movieDataOptions),
-                movies.Items.ToArray(),
-                movies.TotalSize,
-                pagingOptions);
+                var collection = CollectionWithPaging<MovieDataResource>.Create(
+                    Link.ToCollection(nameof(GetMovieDataSurpriseAsync), movieDataOptions),
+                    movies.Items.ToArray(),
+                    movies.TotalSize,
+                    pagingOptions);
 
-            return Ok(collection);
+                if (ct.IsCancellationRequested) throw new OperationCanceledException();
+
+                return Ok(collection);
+            }
+            catch (OperationCanceledException canceledException) when (ct.IsCancellationRequested)
+            {
+                _logger.LogTrace(canceledException.Message);
+                return NoContent();
+            }
         }
 
         [HttpGet("experiment", Name = nameof(GetMovieDataExperimentAsync))]
@@ -744,7 +764,7 @@ namespace Jaxx.VideoDb.WebCore.Controllers
         */
         [HttpGet("favorites", Name = nameof(GetFavoriteMoviesAsync))]
         [OpenApiOperation("Get favorite movies", "Get favourite movies for current user.")]
-        [NSwag.Annotations.OpenApiExtensionData("x","y")]
+        [NSwag.Annotations.OpenApiExtensionData("x", "y")]
         [SwaggerResponse(200, typeof(CollectionWithPaging<MovieDataResource>), Description = "-")]
         [SwaggerResponse(401, typeof(void), Description = "You need to be authorized to use this api.")]
         [ValidateModel]
@@ -1176,32 +1196,32 @@ namespace Jaxx.VideoDb.WebCore.Controllers
             return Ok(collection);
         }
 
-         /**
-        * @api {get} /moviedata/moviedata/nextdiskid/{shelterandcompartment} 4. Get next free diskid
-        * @apiVersion 1.18.0
-        * @apiName Get next free diskid in shelte and compartement
-        * @apiGroup MoviesData
-        * 
-        * @apiExample Example usage:
-        * http://localhost:50647/moviedata/nextdiskid/R20F3
-        * 
-        * @apiHeader {String} Content-Type Request type, must be "application/json".
-        * @apiHeader {String} Authorization You need to provide a token (see Authorization): "Bearer [TOKEN]".
-        * @apiHeaderExample {json} Request-Example:
-        * {
-        *   "Content-Type": "application/json"
-        *   "Authorization": "Bearer ewrjfjfoweffefo98098"
-        * }
-        * @apiError 401 Unauthorized
-        * @apiSuccessExample Success-Response:
-        *     HTTP/1.1 200 OK
-        *     {
-        *       R20F3D08
-        *     }
-        */
+        /**
+       * @api {get} /moviedata/moviedata/nextdiskid/{shelterandcompartment} 4. Get next free diskid
+       * @apiVersion 1.18.0
+       * @apiName Get next free diskid in shelte and compartement
+       * @apiGroup MoviesData
+       * 
+       * @apiExample Example usage:
+       * http://localhost:50647/moviedata/nextdiskid/R20F3
+       * 
+       * @apiHeader {String} Content-Type Request type, must be "application/json".
+       * @apiHeader {String} Authorization You need to provide a token (see Authorization): "Bearer [TOKEN]".
+       * @apiHeaderExample {json} Request-Example:
+       * {
+       *   "Content-Type": "application/json"
+       *   "Authorization": "Bearer ewrjfjfoweffefo98098"
+       * }
+       * @apiError 401 Unauthorized
+       * @apiSuccessExample Success-Response:
+       *     HTTP/1.1 200 OK
+       *     {
+       *       R20F3D08
+       *     }
+       */
         [HttpGet("nextdiskid/{shelterandcompartment}", Name = nameof(GetNextFreeDiskId))]
         public async Task<IActionResult> GetNextFreeDiskId([FromRoute] string shelterandcompartment, CancellationToken ct)
-        {            
+        {
             return Ok(await _movieDataService.GetNextFreeDiskId(shelterandcompartment));
         }
 
@@ -1238,7 +1258,7 @@ namespace Jaxx.VideoDb.WebCore.Controllers
         [SwaggerResponse(200, typeof(IEnumerable<string>), Description = "-")]
         [SwaggerResponse(401, typeof(void), Description = "You need to be authorized to use this api.")]
         [ValidateModel]
-        public async Task<IActionResult> GetRacks (CancellationToken ct)
+        public async Task<IActionResult> GetRacks(CancellationToken ct)
         {
 
             var racks = await _movieDataService.GetRacks(ct);
