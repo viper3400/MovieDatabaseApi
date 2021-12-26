@@ -48,15 +48,157 @@ namespace Jaxx.VideoDb.WebApi.Test
             Assert.NotNull(actual.Result.LastSeenInformation);
         }
 
+        [Theory]
+        [Trait("Category", "Online")]
+        [InlineData(new int[] { 62, 2875, 627, 2482 }, 25, 0, 4, 4, "Titanic")]
+        [InlineData(new int[] { 62, 2875, 627, 2482 }, 25, 1, 3, 4, "Highlander - Es kann nur einen geben")]
+        [InlineData(new int[] { 62, 2875, 627, 2482 }, 25, 2, 2, 4, "Tatsächlich Liebe")]
+        [InlineData(new int[] { 62, 2875, 627, 2482 }, 25, 3, 1, 4, "Eddie the Eagle - Alles ist möglich")]
+        public async void ReturnPagedMovieDataOrderedBySeenDateGivenASetofIds(int[] idSet, int limit, int offset, int expectedItemCount, int expectedTotalSize, string expectedfirstTitle)
+        {
+            //var ids = new List<int> { 7, 56, 62, 74, 76, 79, 81, 89, 91, 93, 96, 109, 122, 177, 182, 229, 286, 303, 309, 460, 482, 523, 557, 564, 565, 566, 573, 579, 581, 608, 620, 627, 692, 722, 725, 764, 800, 808, 817, 839, 860, 869, 870, 904, 920, 923, 932, 937, 938, 951, 961, 1042, 1044, 1093, 1107, 1123, 1149, 1172, 1196, 1264, 1290, 1328, 1366, 1539, 1542, 1543, 1572, 1573, 1660, 1668, 1669, 1723, 1728, 1760, 1773, 1801, 1827, 1859, 1880, 1884, 1914, 1985, 1997, 2032, 2064, 2089, 2094, 2142, 2173, 2212, 2274, 2289, 2295, 2296, 2341, 2343, 2344, 2371, 2422, 2440, 2482, 2556, 2600, 2609, 2717, 2756, 2875, 2881 };
+
+            var pagingOptions = new PagingOptions { Limit = limit, Offset = offset };
+            var actual = await _movieDataService.GetMovieDataAsync(idSet.ToList(), pagingOptions, new MovieDataOptions { UseInlineCoverImage = true, SortOrder = MovieDataSortOrder.ByLastSeenDateAsc }, new System.Threading.CancellationToken());
+
+            Assert.Equal(expectedTotalSize, actual.TotalSize);
+            Assert.Equal(expectedItemCount, actual.Items.Count());
+            Assert.Equal(expectedfirstTitle, actual.Items.FirstOrDefault().title);
+
+        }
+
+
+        [Theory]
+        [InlineData(500, 0, 108, 108, "Was nützt die Liebe in Gedanken")]
+        [InlineData(50, 0, 50, 108, "Was nützt die Liebe in Gedanken")]
+        [InlineData(25, 50, 25, 108, "To Rome with Love")]
+        [InlineData(50, 100, 8, 108, "Kalender Girls")]
+        [InlineData(10, 10, 10, 108, "The Sixth Sense")]
+        [Trait("Category", "Online")]
+        public async void ReturnPagedMovieDataOrderedBySeenDateGivenByIds(int limit, int offset, int expectedItemCount, int expectedTotalSize, string firstTitle)
+        {
+            var ids = new List<int> { 7, 56, 62, 74, 76, 79, 81, 89, 91, 93, 96, 109, 122, 177, 182, 229, 286, 303, 309, 460, 482, 523, 557, 564, 565, 566, 573, 579, 581, 608, 620, 627, 692, 722, 725, 764, 800, 808, 817, 839, 860, 869, 870, 904, 920, 923, 932, 937, 938, 951, 961, 1042, 1044, 1093, 1107, 1123, 1149, 1172, 1196, 1264, 1290, 1328, 1366, 1539, 1542, 1543, 1572, 1573, 1660, 1668, 1669, 1723, 1728, 1760, 1773, 1801, 1827, 1859, 1880, 1884, 1914, 1985, 1997, 2032, 2064, 2089, 2094, 2142, 2173, 2212, 2274, 2289, 2295, 2296, 2341, 2343, 2344, 2371, 2422, 2440, 2482, 2556, 2600, 2609, 2717, 2756, 2875, 2881 };
+
+            var pagingOptions = new PagingOptions { Limit = limit, Offset = offset };
+            var actual = await _movieDataService.GetMovieDataAsync(ids, pagingOptions, new MovieDataOptions { UseInlineCoverImage = true, SortOrder = MovieDataSortOrder.ByLastSeenDateAsc }, new System.Threading.CancellationToken());
+
+            Assert.Equal(expectedTotalSize, actual.TotalSize);
+            Assert.Equal(expectedItemCount, actual.Items.Count());
+            Assert.Equal(firstTitle, actual.Items.FirstOrDefault().title);
+
+        }
+
+        [Fact]
+        [Trait("Category", "Offline")]
+        public void SortQueryByLastSeenDateWhenAllSeenDataIsSet()
+        {
+            var mockedVideoData = new List<Data.DatabaseModels.videodb_videodata>
+            {
+                new Data.DatabaseModels.videodb_videodata
+                {
+                    id = 1,
+                    title = "Mocked Movie One",
+                    SeenInformation = new List<Data.DatabaseModels.homewebbridge_userseen>() {
+                        new Data.DatabaseModels.homewebbridge_userseen() { asp_username = "test_user", asp_viewgroup = "test_group", id = 1, vdb_videoid = 1, viewdate = new DateTime(2021, 12, 1) }
+                    },
+                },
+                new Data.DatabaseModels.videodb_videodata
+                {
+                    id = 2,
+                    title = "Mocked Movie Two",
+                    SeenInformation = new List<Data.DatabaseModels.homewebbridge_userseen>() {
+                        new Data.DatabaseModels.homewebbridge_userseen() { asp_username = "test_user", asp_viewgroup = "test_group", id = 2, vdb_videoid = 2, viewdate = new DateTime(2020, 12, 2) }
+                    },
+                },
+                new Data.DatabaseModels.videodb_videodata
+                {
+                    id = 3,
+                    title = "Mocked Movie Three",
+                    SeenInformation = new List<Data.DatabaseModels.homewebbridge_userseen>() {
+                        new Data.DatabaseModels.homewebbridge_userseen() { asp_username = "test_user", asp_viewgroup = "test_group", id = 3, vdb_videoid = 3, viewdate = new DateTime(2021, 12, 2) }
+                    },
+                }
+            };
+
+            var query = mockedVideoData.AsQueryable();
+            var actual = _movieDataServiceByPassInterface.QuerySortOrder(MovieDataSortOrder.ByLastSeenDateAsc, query);
+            Assert.Equal(2, actual.ToArray()[0].id);
+            Assert.Equal(1, actual.ToArray()[1].id);
+            Assert.Equal(3, actual.ToArray()[2].id);
+        }
+
+        [Fact]
+        [Trait("Category", "Offline")]
+        public void SortQueryByLastSeenDateWhenNotAllSeenDataIsSet()
+        {
+            var mockedVideoData = new List<Data.DatabaseModels.videodb_videodata>
+            {
+                new Data.DatabaseModels.videodb_videodata
+                {
+                    id = 1,
+                    title = "Mocked Movie One",
+                    SeenInformation = new List<Data.DatabaseModels.homewebbridge_userseen>() {
+                        new Data.DatabaseModels.homewebbridge_userseen() { asp_username = "test_user", asp_viewgroup = "test_group", id = 1, vdb_videoid = 1, viewdate = new DateTime(2021, 12, 1) }
+                    },
+                },
+                new Data.DatabaseModels.videodb_videodata
+                {
+                    id = 2,
+                    title = "Mocked Movie Two",
+                    SeenInformation = new List<Data.DatabaseModels.homewebbridge_userseen>(),
+                },
+                new Data.DatabaseModels.videodb_videodata
+                {
+                    id = 3,
+                    title = "Mocked Movie Three",
+                    SeenInformation = new List<Data.DatabaseModels.homewebbridge_userseen>() {
+                        new Data.DatabaseModels.homewebbridge_userseen() { asp_username = "test_user", asp_viewgroup = "test_group", id = 2, vdb_videoid = 3, viewdate = new DateTime(2020, 12, 2) }
+                    },
+                },
+                new Data.DatabaseModels.videodb_videodata
+                {
+                    id = 4,
+                    title = "Mocked Movie Four",
+                    SeenInformation = new List<Data.DatabaseModels.homewebbridge_userseen>() {
+                        new Data.DatabaseModels.homewebbridge_userseen() { asp_username = "test_user", asp_viewgroup = "test_group", id = 3, vdb_videoid = 4, viewdate = new DateTime(2019, 12, 2) },
+                        new Data.DatabaseModels.homewebbridge_userseen() { asp_username = "test_user", asp_viewgroup = "test_group", id = 3, vdb_videoid = 4, viewdate = new DateTime(2021, 12, 2) }
+                    },
+                },
+                new Data.DatabaseModels.videodb_videodata
+                {
+                    id = 5,
+                    title = "Mocked Movie Five",
+                    SeenInformation = new List<Data.DatabaseModels.homewebbridge_userseen>()
+                },
+                new Data.DatabaseModels.videodb_videodata
+                {
+                    id = 6,
+                    title = "Mocked Movie Six",
+                    SeenInformation = new List<Data.DatabaseModels.homewebbridge_userseen>()
+                }
+            };
+
+            var query = mockedVideoData.AsQueryable();
+            var actual = _movieDataServiceByPassInterface.QuerySortOrder(MovieDataSortOrder.ByLastSeenDateAsc, query);
+            Assert.Equal(6, actual.Count());
+            Assert.Equal(2, actual.ToArray()[0].id);
+            Assert.Equal(5, actual.ToArray()[1].id);
+            Assert.Equal(6, actual.ToArray()[2].id);
+            Assert.Equal(3, actual.ToArray()[3].id);
+            Assert.Equal(1, actual.ToArray()[4].id);
+            Assert.Equal(4, actual.ToArray()[5].id);
+        }
+
+
         [Fact]
         [Trait("Category", "Online")]
         public async void ReturnMovieDataByTitle()
         {
-            var expectedId = 1865;            
+            var expectedId = 1865;
             var pagingOptions = new PagingOptions { Limit = 100, Offset = 0 };
-            var movieDataOptions = new MovieDataOptions {Title = "Taffe Mädels" };
+            var movieDataOptions = new MovieDataOptions { Title = "Taffe Mädels" };
 
-            var actual = await _movieDataService.GetMovieDataAsync(null, pagingOptions, movieDataOptions,  new System.Threading.CancellationToken());
+            var actual = await _movieDataService.GetMovieDataAsync(null, pagingOptions, movieDataOptions, new System.Threading.CancellationToken());
 
             Assert.Equal(1, actual.TotalSize);
             Assert.Equal(expectedId, actual.Items.FirstOrDefault().id);
@@ -179,12 +321,26 @@ namespace Jaxx.VideoDb.WebApi.Test
         public async void ReturnPagedMovieSeenDataWithDateRangeFilter()
         {
             var pagingOptions = new PagingOptions { Limit = 3000, Offset = 0 };
-            var dateRangeFilterOptions = new DateRangeFilterOptions { FromDate = new DateTime(2020, 1, 11), ToDate = new DateTime(2020,1,13) };
+            var dateRangeFilterOptions = new DateRangeFilterOptions { FromDate = new DateTime(2020, 1, 11), ToDate = new DateTime(2020, 1, 13) };
 
             var actual = await _movieDataService.GetSeenMovies(pagingOptions, dateRangeFilterOptions, new System.Threading.CancellationToken());
 
             Assert.Equal(3, actual.TotalSize);
             Assert.Equal("Willkommen im Wunder Park", actual.Items.FirstOrDefault().Movie.title);
+        }
+
+        [Theory]
+        [InlineData(200, 0, 108, "Warm Bodies", "")]
+        [Trait("Category", "Online")]
+        public async void ReturnGetWatchAgainMoviesAsync(int limit, int offset, int expectedCount, string expectedTitle, string notExpectedTitle)
+        {
+            var pagingOptions = new PagingOptions { Limit = limit, Offset = offset };
+            var actual = await _movieDataService.GetWatchAgainMoviesAsync(_userName, pagingOptions, new System.Threading.CancellationToken());
+
+            Assert.Equal(expectedCount, actual.Items.Count());
+            Assert.Equal(expectedCount, actual.TotalSize);
+            Assert.Contains(expectedTitle, actual.Items.Select(item => item.title));
+            Assert.DoesNotContain(notExpectedTitle, actual.Items.Select(item => item.title));
         }
 
         [Fact]
@@ -329,10 +485,10 @@ namespace Jaxx.VideoDb.WebApi.Test
                 diskid = "R29F3D01",
                 owner_id = 3,
                 mediatype = 16,
-                Genres = new List<MovieDataGenreResource> { new MovieDataGenreResource { Id = 4} }
+                Genres = new List<MovieDataGenreResource> { new MovieDataGenreResource { Id = 4 } }
             };
 
-            var result = await _movieDataService.CreateMovieDataAsync(movie, new System.Threading.CancellationToken());            
+            var result = await _movieDataService.CreateMovieDataAsync(movie, new System.Threading.CancellationToken());
             await _movieDataService.DeleteMovieDataAsync(result.id, new System.Threading.CancellationToken());
 
             Assert.Equal(movie.title, result.title);
@@ -399,7 +555,7 @@ namespace Jaxx.VideoDb.WebApi.Test
             // Prepare deleteion
             await _movieDataService.SetUnsetMovieUserFavorite(movidId, _userName, 1, new System.Threading.CancellationToken());
             await _movieDataService.SetUnsetMovieUserFlagged(movidId, _userName, 1, new System.Threading.CancellationToken());
-            
+
             // tear down test
             _movieDataServiceByPassInterface.DeleteCompleteUserMovieSetting(movidId, _userName);
             var movieDeleted = await _movieDataService.GetMovieDataAsync(movidId, new System.Threading.CancellationToken());
@@ -411,7 +567,7 @@ namespace Jaxx.VideoDb.WebApi.Test
         [Fact]
         [Trait("Category", "Online")]
         public async void ReturnPagedMovieDataByGenres()
-        {                      
+        {
             var pagingOptions = new PagingOptions { Limit = 1000, Offset = 0 };
             var movieDataOptions = new MovieDataOptions { Genres = "Gay,Comedy" };
 

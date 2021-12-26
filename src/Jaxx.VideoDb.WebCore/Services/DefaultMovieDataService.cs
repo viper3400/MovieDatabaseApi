@@ -18,6 +18,7 @@ using System.IO;
 using Jaxx.Images;
 using Jaxx.WebApi.Shared.Models;
 
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Jaxx.VideoDb.WebApi.Test")]
 namespace Jaxx.VideoDb.WebCore.Services
 {
     public class DefaultMovieDataService : IMovieDataService
@@ -112,6 +113,7 @@ namespace Jaxx.VideoDb.WebCore.Services
 
             var size = await query.CountAsync(ct);
 
+
             var items = await query
                 .Include(o => o.VideoOwner)
                 .Include(v => v.VideoGenres)
@@ -119,11 +121,14 @@ namespace Jaxx.VideoDb.WebCore.Services
                 .Include(m => m.VideoMediaType)
                 .Include(s => s.SeenInformation)
                 .Include(s => s.UserSettings)
-                .Skip(pagingOptions.Offset.Value)
-                .Take(pagingOptions.Limit.Value)
                 .ToListAsync(ct);
 
-            var mappedItems = _mapper.Map<IEnumerable<MovieDataResource>>(items, opt => opt.Items[Controllers.Infrastructure.AutoMapperConstants.INLINE_COVER_IMAGE] = movieDataOptions.UseInlineCoverImage);
+            var sortedItems = QuerySortOrder(movieDataOptions.SortOrder, items);
+            var selectedItems = sortedItems
+                .Skip(pagingOptions.Offset.Value)
+                .Take(pagingOptions.Limit.Value);
+
+            var mappedItems = _mapper.Map<IEnumerable<MovieDataResource>>(selectedItems, opt => opt.Items[Controllers.Infrastructure.AutoMapperConstants.INLINE_COVER_IMAGE] = movieDataOptions.UseInlineCoverImage);
 
             return new Page<MovieDataResource>
             {
@@ -178,19 +183,19 @@ namespace Jaxx.VideoDb.WebCore.Services
                 query = QueryFilterByTvOption(movieDataOptions.IsTv, query);
             }
 
-            // Apply sort order
-            query = QuerySortOrder(movieDataOptions.SortOrder, query);
-
             return query;
         }
 
-        private IQueryable<videodb_videodata> QuerySortOrder(MovieDataSortOrder sortOrder, IQueryable<videodb_videodata> query)
+        internal IEnumerable<videodb_videodata> QuerySortOrder(MovieDataSortOrder sortOrder, IEnumerable<videodb_videodata> query)
         {
             switch (sortOrder)
             {
                 case MovieDataSortOrder.ByLastSeenDateAsc:
-                    query = query
-                        .OrderBy(i => i.SeenInformation.OrderByDescending(s => s.viewdate).FirstOrDefault().viewdate);
+                    var nulls = query.Where(i => i.SeenInformation.Count() == 0).OrderBy(i => i.id);
+                    var notNulls = query.Where(i => i.SeenInformation.Count() > 0 ).OrderBy(i => i.SeenInformation.OrderByDescending(s => s.viewdate).FirstOrDefault().viewdate);
+                    var notNullsCount = notNulls.Count();
+                    var nullsCount = nulls.Count();
+                    query = nulls.Concat(notNulls);
                     break;
                 default:
                 case MovieDataSortOrder.ByDiskIdAsc:
