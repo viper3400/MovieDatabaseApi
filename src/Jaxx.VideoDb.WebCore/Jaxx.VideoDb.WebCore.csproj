@@ -12,8 +12,8 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
-    <PackageReference Include="Jaxx.MovieMetaEngine" Version="2.3.2.60" />
-    <PackageReference Include="Jaxx.MovieMetaEngine.TheMovieDbApi" Version="2.3.2.60" />
+    <PackageReference Include="Jaxx.MovieMetaEngine" Version="2.4.0.72" />
+    <PackageReference Include="Jaxx.MovieMetaEngine.TheMovieDbApi" Version="2.4.0.72" />
     <PackageReference Include="Jaxx.XmlMapper" Version="2.0.0.23-pre" />
         <PackageReference Include="NSwag.AspNetCore" Version="13.13.2" />
         <PackageReference Include="System.IO.Abstractions" Version="13.2.47" />
