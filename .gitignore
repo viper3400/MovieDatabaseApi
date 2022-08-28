@@ -257,3 +257,4 @@ testsettings.json
 appsettings.json
 /src/Jaxx.VideoDb.WebApi/cache/*
 
+/test/Jaxx.VideoDb.WebApi.Test/reset-database.cmd
