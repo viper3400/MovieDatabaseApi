@@ -85,7 +85,7 @@ namespace Jaxx.VideoDb.WebApi.Test
             };
 
             var actual = digitalCopySync.FindMatchingTitles("V:", "*.mkv");
-            Assert.Equal(616, actual.Count());
+            Assert.Equal(337, actual.Count());
             var x = actual.SelectMany(s => s.matchingFiles);
             Assert.Single(x.Where(m => m.FullName == @"V:\UnitTestMovie 4\UnitTestMovie 4.mkv"));
             Assert.Empty(x.Where(m => m.FullName == @"V:\UnitTestMovie 2\UnitTestMovie 2.mkv"));
@@ -108,7 +108,7 @@ namespace Jaxx.VideoDb.WebApi.Test
         public void FindFilesWithoutDbEntries()
         {
             var orpahns = digitalCopySync.FindFilesWithoutDbEntries("V:", "*.mkv");
-            Assert.Equal(3, orpahns.Count());
+            Assert.Equal(2, orpahns.Count());
             Assert.Contains(@"V:\UnitTestMovie 4\UnitTestMovie 4.mkv", orpahns.Select(o => o.FullName));
             Assert.Contains(@"V:\UnitTestMovie Orphan 1\UnitTestMovie Orphan 1.mkv", orpahns.Select(o => o.FullName));
         }

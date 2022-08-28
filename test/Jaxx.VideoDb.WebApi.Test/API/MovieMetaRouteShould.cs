@@ -65,7 +65,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
             dynamic collection = JObject.Parse(response.Content.ReadAsStringAsync().Result);
-
+            
             var actualCount = (int)collection.size;
             Assert.Equal(20, actualCount);
         }
@@ -80,7 +80,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
             dynamic collection = JObject.Parse(response.Content.ReadAsStringAsync().Result);
 
             var actualCount = (int)collection.size;
-            Assert.Equal(95, actualCount);
+            Assert.Equal(96, actualCount);
         }
 
         [Fact]
@@ -93,7 +93,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
             dynamic collection = JObject.Parse(response.Content.ReadAsStringAsync().Result);
 
             var actualCount = (int)collection.size;
-            Assert.Equal(95, actualCount);
+            Assert.Equal(20, actualCount);
         }
 
         [Fact]

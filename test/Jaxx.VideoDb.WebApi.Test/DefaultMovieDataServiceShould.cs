@@ -71,12 +71,20 @@ namespace Jaxx.VideoDb.WebApi.Test
         [Theory]
         [InlineData(500, 0, 108, 108, "Was nützt die Liebe in Gedanken")]
         [InlineData(50, 0, 50, 108, "Was nützt die Liebe in Gedanken")]
-        [InlineData(25, 50, 25, 108, "To Rome with Love")]
-        [InlineData(50, 100, 8, 108, "Kalender Girls")]
+        [InlineData(25, 50, 25, 108, "Robot & Frank")]
+        [InlineData(50, 100, 8, 108, "The Color of Magic")]
         [InlineData(10, 10, 10, 108, "The Sixth Sense")]
         [Trait("Category", "Online")]
         public async void ReturnPagedMovieDataOrderedBySeenDateGivenByIds(int limit, int offset, int expectedItemCount, int expectedTotalSize, string firstTitle)
         {
+            /*
+                select v.title, max(s.viewdate) from videodb_videodata v 
+                    left join homewebbridge_userseen s on s.vdb_videoid = v.id
+                    where v.id in (  ...)
+                    group by v.title
+                order by max(s.viewdate) asc
+                limit 50 offset 100
+             */
             var ids = new List<int> { 7, 56, 62, 74, 76, 79, 81, 89, 91, 93, 96, 109, 122, 177, 182, 229, 286, 303, 309, 460, 482, 523, 557, 564, 565, 566, 573, 579, 581, 608, 620, 627, 692, 722, 725, 764, 800, 808, 817, 839, 860, 869, 870, 904, 920, 923, 932, 937, 938, 951, 961, 1042, 1044, 1093, 1107, 1123, 1149, 1172, 1196, 1264, 1290, 1328, 1366, 1539, 1542, 1543, 1572, 1573, 1660, 1668, 1669, 1723, 1728, 1760, 1773, 1801, 1827, 1859, 1880, 1884, 1914, 1985, 1997, 2032, 2064, 2089, 2094, 2142, 2173, 2212, 2274, 2289, 2295, 2296, 2341, 2343, 2344, 2371, 2422, 2440, 2482, 2556, 2600, 2609, 2717, 2756, 2875, 2881 };
 
             var pagingOptions = new PagingOptions { Limit = limit, Offset = offset };
@@ -241,7 +249,7 @@ namespace Jaxx.VideoDb.WebApi.Test
 
             var actual = await _movieDataService.GetMovieDataAsync(null, pagingOptions, movieDataOptions, new System.Threading.CancellationToken());
 
-            Assert.Equal(97, actual.TotalSize);
+            Assert.Equal(98, actual.TotalSize);
         }
 
 
@@ -312,7 +320,7 @@ namespace Jaxx.VideoDb.WebApi.Test
 
             var actual = await _movieDataService.GetSeenMovies(pagingOptions, new DateRangeFilterOptions(), new System.Threading.CancellationToken());
 
-            Assert.Equal(1908, actual.TotalSize);
+            Assert.Equal(2023, actual.TotalSize);
             Assert.Equal("Der Ganz normale Wahnsinn", actual.Items.FirstOrDefault(s => s.SeenDate == new DateTime(2019, 05, 25)).Movie.title);
         }
 
@@ -330,7 +338,7 @@ namespace Jaxx.VideoDb.WebApi.Test
         }
 
         [Theory]
-        [InlineData(200, 0, 108, "Warm Bodies", "")]
+        [InlineData(200, 0, 113, "Warm Bodies", "")]
         [Trait("Category", "Online")]
         public async void ReturnGetWatchAgainMoviesAsync(int limit, int offset, int expectedCount, string expectedTitle, string notExpectedTitle)
         {
@@ -435,8 +443,8 @@ namespace Jaxx.VideoDb.WebApi.Test
         [Trait("Category", "Online")]
         public async void ReturnPagedMovieDataIncludingFlagged()
         {
-            var id = new List<int> { 1997 };
-            var expectedMovie = "Geography Club";
+            var id = new List<int> { 134 };
+            var expectedMovie = "The Illusionist";
             var pagingOptions = new PagingOptions { Limit = 100, Offset = 0 };
             var movieDataOptions = new MovieDataOptions();
 
