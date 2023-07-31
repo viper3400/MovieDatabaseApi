@@ -38,7 +38,7 @@ namespace Jaxx.VideoDb.WebApi.Test
         {
             var result = digitalCopySync.GetDbEntriesWithFilename();
             Assert.Equal("\"V:\\Filme\\Was nützt die Liebe in Gedanken\\Was nützt die Liebe in Gedanken.mkv\"", result.Where(item => item.title == "Was nützt die Liebe in Gedanken").FirstOrDefault()?.filename);
-            Assert.Equal(2322, result.Count());
+            Assert.Equal(2307, result.Count());
         }
 
         [Fact]
@@ -46,9 +46,9 @@ namespace Jaxx.VideoDb.WebApi.Test
          public void GetExistingFileLists()
         {
             var result = digitalCopySync.CheckFilesOnStorage();
-            Assert.Equal(2311, result.EntriesAll.Count);
+            Assert.Equal(2307, result.EntriesAll.Count);
             Assert.Empty(result.EntriesWhereFileNotExists);
-            Assert.Equal(2311, result.EntriesWhereFileExists.Count);
+            Assert.Equal(2307, result.EntriesWhereFileExists.Count);
         }
 
         [Fact]

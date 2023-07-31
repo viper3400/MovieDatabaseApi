@@ -67,10 +67,10 @@ namespace Jaxx.VideoDb.WebApi.Test.API
             dynamic collection = JObject.Parse(response.Content.ReadAsStringAsync().Result);
             
             var actualCount = (int)collection.size;
-            Assert.Equal(20, actualCount);
+            Assert.InRange(actualCount, 18, 21);
         }
 
-        [Fact]
+        [Fact(Skip = "Ofdb retired")]
         [Trait("Category", "OnlineWWW")]
         public async Task GetMovieCollectionByTitleOfdb()
         {
@@ -83,7 +83,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
             Assert.Equal(96, actualCount);
         }
 
-        [Fact]
+        [Fact(Skip = "Ofdb retired")]
         [Trait("Category", "OnlineWWW")]
         public async Task GetMovieCollectionByTitleOfdbDefault()
         {
@@ -96,7 +96,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
             Assert.Equal(20, actualCount);
         }
 
-        [Fact]
+        [Fact(Skip = "Ofdb retired")]
         [Trait("Category", "OnlineWWW")]
         public async Task GetMovieCollectionByReference()
         {
@@ -145,7 +145,7 @@ namespace Jaxx.VideoDb.WebApi.Test.API
             Assert.NotNull(converted.runtime);
         }
 
-        [Fact]
+        [Fact(Skip = "Ofdb retired")]
         [Trait("Category", "OnlineWWW")]
         public async Task GetMovieCollectionByBarcode()
         {

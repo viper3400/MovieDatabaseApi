@@ -35,7 +35,7 @@
     <None Update="ClientSecrets.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="testsetting.json.example">
+    <None Update="testsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="testsettings.json">

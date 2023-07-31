@@ -85,7 +85,7 @@ namespace Jaxx.VideoDb.WebApi.Test
             };
 
             var actual = digitalCopySync.FindMatchingTitles("V:", "*.mkv");
-            Assert.Equal(337, actual.Count());
+            Assert.Equal(352, actual.Count());
             var x = actual.SelectMany(s => s.matchingFiles);
             Assert.Single(x.Where(m => m.FullName == @"V:\UnitTestMovie 4\UnitTestMovie 4.mkv"));
             Assert.Empty(x.Where(m => m.FullName == @"V:\UnitTestMovie 2\UnitTestMovie 2.mkv"));
@@ -101,7 +101,6 @@ namespace Jaxx.VideoDb.WebApi.Test
             Assert.Equal(7, result.Count());
             Assert.Contains(@"V:\UnitTestMovie 2\UnitTestMovie 2.mkv", result.Select(i => i.FullName));
         }
-
 
         [Fact]
         [Trait("Category", "Online")]

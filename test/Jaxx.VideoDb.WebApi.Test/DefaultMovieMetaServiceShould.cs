@@ -46,7 +46,7 @@ namespace Jaxx.VideoDb.WebApi.Test
             _movieMetaServcie = new DefaultMovieMetaService(logger, serviceProvider.GetService<IMapper>(), new List<MovieMetaEngine.IMovieMetaSearch> { new OfdbParser.OfdbMovieMetaSearch() }, new DefaultMovieMetaEngineRepository());
         }
 
-        [Fact]
+        [Fact(Skip = "Ofdb retired")]
         [Trait("Category", "OnlineWWW")]
         public async void ReturnMovieMetaByTitle()
         {
@@ -57,7 +57,7 @@ namespace Jaxx.VideoDb.WebApi.Test
             Assert.Equal(expectedMovie, actual.Items.FirstOrDefault().Title);
         }
 
-        [Fact]
+        [Fact(Skip = "Ofdb retired")]
         [Trait("Category", "OnlineWWW")]
         public async void ConvertMetaMovieResourceIntoMovieDataResource()
         {
