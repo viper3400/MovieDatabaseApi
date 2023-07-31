@@ -17,7 +17,7 @@ namespace Jaxx.WebGallery.Test
             TestHelpers.PrepareDestinationPath(thumbsPath);
             ImageResizer.ResizeImage(Path.Join(assetsPath,imageFile), thumbsPath, 800, 300);
 
-            var actualImageSize = Image.Load(Path.Join(thumbsPath, imageFile)).Size();
+            var actualImageSize = Image.Load(Path.Join(thumbsPath, imageFile));
             Assert.Equal(800, actualImageSize.Width);
             Assert.Equal(300, actualImageSize.Height);
             TestHelpers.ClearDestinationPath(thumbsPath);
@@ -33,7 +33,7 @@ namespace Jaxx.WebGallery.Test
             TestHelpers.PrepareDestinationPath(thumbsPath);
             ImageResizer.ResizeImage(Path.Join(assetsPath, imageFile), thumbsPath, 800, 300, thumbFileName);
 
-            var actualImageSize = Image.Load(Path.Join(thumbsPath, thumbFileName)).Size();
+            var actualImageSize = Image.Load(Path.Join(thumbsPath, thumbFileName));
             Assert.Equal(800, actualImageSize.Width);
             Assert.Equal(300, actualImageSize.Height);
             TestHelpers.ClearDestinationPath(thumbsPath);
@@ -48,7 +48,7 @@ namespace Jaxx.WebGallery.Test
             TestHelpers.PrepareDestinationPath(thumbsPath);
             ImageResizer.ResizeImage(Path.Join(assetsPath, imageFile), thumbsPath, 800, -1);
 
-            var actualImageSize = Image.Load(Path.Join(thumbsPath, imageFile)).Size();
+            var actualImageSize = Image.Load(Path.Join(thumbsPath, imageFile));
             Assert.Equal(800, actualImageSize.Width);
             Assert.Equal(600, actualImageSize.Height);
             TestHelpers.ClearDestinationPath(thumbsPath);
@@ -63,7 +63,7 @@ namespace Jaxx.WebGallery.Test
             TestHelpers.PrepareDestinationPath(thumbsPath);
             ImageResizer.ResizeImage(Path.Join(assetsPath, imageFile), thumbsPath, -1, 600);
 
-            var actualImageSize = Image.Load(Path.Join(thumbsPath, imageFile)).Size();
+            var actualImageSize = Image.Load(Path.Join(thumbsPath, imageFile));
             Assert.Equal(800, actualImageSize.Width);
             Assert.Equal(600, actualImageSize.Height);
             TestHelpers.ClearDestinationPath(thumbsPath);
