@@ -12,10 +12,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET 5.0
+    - name: Setup .NET 7
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 7.x
     - name: Copy example configs
       run: |
         cp ./test/Jaxx.VideoDb.WebApi.Test/appsettings.example.json ./test/Jaxx.VideoDb.WebApi.Test/appsettings.json
